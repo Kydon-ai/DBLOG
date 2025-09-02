@@ -19,12 +19,12 @@ const data = [
         title: '前端充电宝',
         description: '前端工程师个人前端语雀笔记',
     }, 
-    {
-        url: 'https://interviewguide.cn/',
-        avatarImg: 'https://interviewguide.cn/images/personal/logo.png',
-        title: 'Ant Design Title 1',
-        description: '这是资源站描述',
-    }, 
+    // {
+    //     url: 'https://interviewguide.cn/',
+    //     avatarImg: 'https://interviewguide.cn/images/personal/logo.png',
+    //     title: 'Ant Design Title 1',
+    //     description: '这是资源站描述',
+    // }, 
     {
         url: 'https://interview.poetries.top/',
         avatarImg: 'https://interview.poetries.top/logo.png',
