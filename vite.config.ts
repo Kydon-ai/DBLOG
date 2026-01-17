@@ -10,10 +10,10 @@ export default defineConfig({
     // 配置代理解决CORS问题
     proxy: {
       '/api': {
-        target: 'http://localhost:8001', // 后端服务器地址
-        changeOrigin: true, // 允许跨域
-        secure: false, // 不验证SSL证书
-        rewrite: (path) => path.replace(/^\/api/, ''), // 重写路径，去掉/api前缀
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        secure: false,
+        // 不重写路径，保持/api前缀
       },
     },
   },
