@@ -1,6 +1,6 @@
 // TopMenu.tsx
 import React, { useState } from 'react';
-import { Button, Dropdown, Menu, Row, Avatar } from 'antd';
+import { Button, Dropdown, Menu, Row, Avatar, Space, MenuProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '../utils/windowContext/win';
 import { MenuUnfoldOutlined } from '@ant-design/icons';
@@ -39,6 +39,11 @@ const TopMenu: React.FC = () => {
     ];
     const route = useNavigate()
     const onClick = (e: { key: string }) => {
+        if (e.key === 'logout') {
+            useAppStore.setState({ isLogin: false });
+            route('/login');
+            return;
+        }
         setCurrent(e.key);
         console.log('打印key', e.key)
         route("/" + e.key)
@@ -51,6 +56,16 @@ const TopMenu: React.FC = () => {
             items={items}
         />
     );
+    const userItems: MenuProps['items'] = [
+        {
+            key: 'profile-center',
+            label: '个人中心'
+        },
+        {
+            key: 'logout',
+            label: '退出登录'
+        },
+    ];
     const handleClickLogo = () => {
         // console.log(window.location.href ,window.location.href)
         if (window.location.href != window.location.origin + '/') window.location.href = window.location.origin
@@ -77,8 +92,8 @@ const TopMenu: React.FC = () => {
                         {isLogin ? (
                             <>
                                 <Space>
-                                    <span>{useAppStore.getState().userInfo?.username || '用户'}</span>
-                                    <Dropdown overlay={menus} trigger={['click']} >
+                                    <span>{useAppStore.getState().userInfo?.username || '用户未设置昵称'}</span>
+                                    <Dropdown menu={{ items: userItems, onClick: onClick }} placement="bottomRight" >
                                         <Avatar src={"/img/ht.gif"} size='large'></Avatar>
                                     </Dropdown>
                                 </Space>
