@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import request from '../utils/https/request';
 
@@ -22,6 +22,7 @@ interface Article {
 const ArticleCard = ({ article }: { article: Article }) => {
   const navigate = useNavigate();
   const { id, title } = article;
+  const [isHovered, setIsHovered] = useState(false);
 
   // 处理卡片点击事件
   const handleCardClick = () => {
@@ -34,18 +35,17 @@ const ArticleCard = ({ article }: { article: Article }) => {
   return (
     <div
       onClick={handleCardClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         cursor: 'pointer',
         border: '1px solid #eee',
         borderRadius: '8px',
         overflow: 'hidden',
         backgroundColor: 'white',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        boxShadow: isHovered ? '0 4px 16px rgba(0, 0, 0, 0.12)' : '0 2px 8px rgba(0, 0, 0, 0.08)',
+        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
         transition: 'transform 0.3s, box-shadow 0.3s',
-        '&:hover': {
-          transform: 'translateY(-2px)',
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-        }
       }}
     >
       {/* 16:9比例的图片容器 */}

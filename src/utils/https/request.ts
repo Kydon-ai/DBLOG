@@ -4,6 +4,7 @@ type RequestInterceptor = (
 ) => Promise<RequestInit & { url: string }> | (RequestInit & { url: string });
 type ResponseInterceptor = (response: Response) => Promise<Response> | Response;
 
+// 从localStorage获取token，兼容旧的实现
 function getAuthToken(): string {
 	return localStorage.getItem('token') || 'test_token';
 }
@@ -74,8 +75,9 @@ class Request {
 			}
 		}
 
-		// 添加Authorization头（如果还没有的话）
-		if (!headers['authorization']) {
+		// 对于登录和注册接口，不添加Authorization头
+		const isAuthUrl = config.url.includes('/api/auth/login') || config.url.includes('/api/auth/register');
+		if (!headers['authorization'] && !isAuthUrl) {
 			headers['authorization'] = `Bearer ${getAuthToken()}`;
 		}
 
@@ -166,7 +168,9 @@ request.useRequest((config) => {
 	}
 
 	const headers = config.headers as Record<string, string>;
-	if (!headers['Authorization'] && !headers['authorization']) {
+	// 对于登录和注册接口，不添加Authorization头
+	const isAuthUrl = config.url.includes('/api/auth/login') || config.url.includes('/api/auth/register');
+	if (!headers['Authorization'] && !headers['authorization'] && !isAuthUrl) {
 		headers['Authorization'] = `Bearer ${getAuthToken()}`;
 	}
 

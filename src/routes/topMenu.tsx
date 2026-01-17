@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { Button, Dropdown, Menu, Row, Avatar, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '../utils/windowContext/win';
-import { DownOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { DownOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
+import { useAppStore } from '../store/useAppStore';
 const TopMenu: React.FC = () => {
     const [current, setCurrent] = useState('home');
     const { size, isHorizontal } = useWindowSize();
+    const { isLogin } = useAppStore();
 
     console.log("查看全屏宽高：", size.width, size.height, isHorizontal)
     const items = [
@@ -65,14 +67,24 @@ const TopMenu: React.FC = () => {
                     </div>
                 </div>
                 {isHorizontal ? (
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Menu
                             onClick={onClick}
                             selectedKeys={[current]}
                             mode="horizontal"
                             items={items}
                         />
-                        <Avatar src={"/img/ht.gif"} size='large'></Avatar>
+                        {isLogin ? (
+                            <Avatar src={"/img/ht.gif"} size='large'></Avatar>
+                        ) : (
+                            <Button
+                                type="primary"
+                                onClick={() => route('/login')}
+                                style={{ marginLeft: '16px' }}
+                            >
+                                登录
+                            </Button>
+                        )}
                     </div>
                 ) : (
                     <Dropdown overlay={menus} trigger={['click']}>

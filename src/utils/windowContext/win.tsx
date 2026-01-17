@@ -1,9 +1,17 @@
 // WindowSizeContext.js
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-const WindowSizeContext = createContext();
+interface WindowSizeContextType {
+  size: { width: number; height: number };
+  isHorizontal: boolean;
+}
 
-export const WindowSizeProvider = ({ children }) => {
+const WindowSizeContext = createContext<WindowSizeContextType>({
+  size: { width: 0, height: 0 },
+  isHorizontal: false
+});
+
+export const WindowSizeProvider = ({ children }: { children: React.ReactNode }) => {
   const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const [isHorizontal, setIsHorizontal] = useState(window.innerWidth >= 768); // 根据需要调整断点
   useEffect(() => {
@@ -20,7 +28,7 @@ export const WindowSizeProvider = ({ children }) => {
   }, []);
 
   return (
-    <WindowSizeContext.Provider value={{size,isHorizontal}}>
+    <WindowSizeContext.Provider value={{ size, isHorizontal }}>
       {children}
     </WindowSizeContext.Provider>
   );

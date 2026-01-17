@@ -2,10 +2,10 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import AuthGuard from './routes/AuthGuard.tsx';
 
-import { FC, StrictMode, useRef } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 // UI及对应ICON
-import { FloatButton, Button } from 'antd';
+import { FloatButton } from 'antd';
 
 // 引入自定义样式库
 import './Layout.css';
@@ -21,6 +21,7 @@ import ConcatMe from './routes/normal/ConcatMe.tsx';
 import FriendChain from './routes/normal/FriendChain.tsx';
 import ReadArticle from './routes/markdown/article.tsx';
 import WriteArticle from './routes/markdown/WriteArticle.tsx';
+import Login from './routes/login.tsx';
 import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 
 // 主页导航栏数据
@@ -60,7 +61,7 @@ const AppLayout = () => {
 			<div className="layout">
 				{!specialRouter.includes(location.pathname) && (
 					<header className="header" style={{}}>
-						<TopMenu items={items}></TopMenu>
+						<TopMenu></TopMenu>
 					</header>
 				)}
 				<main className="content">
@@ -124,6 +125,7 @@ const AppLayout = () => {
 										</AuthGuard>
 									}
 								/>
+								<Route path="/login" element={<Login />} />
 							</Routes>
 						</div>
 						<FloatButton.BackTop />
