@@ -15,6 +15,10 @@ const TopMenu: React.FC = () => {
             label: '主页',
         },
         {
+            key: 'write-article',
+            label: '写文章',
+        },
+        {
             key: 'about-project',
             label: '关于项目',
         },

@@ -19,6 +19,8 @@ import Home from './routes/Home.tsx';
 import AboutProject from './routes/normal/AboutProject.tsx';
 import ConcatMe from './routes/normal/ConcatMe.tsx';
 import FriendChain from './routes/normal/FriendChain.tsx';
+import ReadArticle from './routes/markdown/article.tsx';
+import WriteArticle from './routes/markdown/WriteArticle.tsx';
 import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 
 // 主页导航栏数据
@@ -26,6 +28,10 @@ const items = [
 	{
 		key: 'home',
 		label: '主页',
+	},
+	{
+		key: 'write-article',
+		label: '写文章',
 	},
 	{
 		key: 'about-project',
@@ -43,10 +49,6 @@ const items = [
 		key: 'friend-chain',
 		label: '网站友链',
 	},
-	// {
-	// 	key: 'tailwind-demo',
-	// 	label: 'Tailwind示例',
-	// },
 ];
 
 // 创建布局组件以使用useLocation钩子
@@ -99,6 +101,26 @@ const AppLayout = () => {
 									element={
 										<AuthGuard>
 											<FriendChain />
+										</AuthGuard>
+									}
+								/>
+
+								{/* 文章相关路由 */}
+								<Route path="/articles/:id" element={<ReadArticle />} />
+								<Route
+									path="/write-article"
+									element={
+										<WriteArticle />
+										// <AuthGuard>
+										// 	<WriteArticle />
+										// </AuthGuard>
+									}
+								/>
+								<Route
+									path="/edit-article/:id"
+									element={
+										<AuthGuard>
+											<WriteArticle />
 										</AuthGuard>
 									}
 								/>
