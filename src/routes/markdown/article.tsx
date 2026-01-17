@@ -35,14 +35,6 @@ interface HierarchicalComment {
   replies: HierarchicalComment[];
 }
 
-// 评论数据类型定义 (兼容旧的评论结构)
-interface Comment {
-  id: number;
-  author_name: string;
-  content: string;
-  created_at: string;
-  like_count: number;
-}
 
 export default function ReadArticle() {
   const { id } = useParams<{ id: string }>();

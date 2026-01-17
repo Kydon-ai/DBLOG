@@ -1,9 +1,9 @@
 // TopMenu.tsx
 import React, { useState } from 'react';
-import { Button, Dropdown, Menu, Row, Avatar, Space } from 'antd';
+import { Button, Dropdown, Menu, Row, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '../utils/windowContext/win';
-import { DownOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
+import { MenuUnfoldOutlined } from '@ant-design/icons';
 import { useAppStore } from '../store/useAppStore';
 const TopMenu: React.FC = () => {
     const [current, setCurrent] = useState('home');
@@ -75,7 +75,14 @@ const TopMenu: React.FC = () => {
                             items={items}
                         />
                         {isLogin ? (
-                            <Avatar src={"/img/ht.gif"} size='large'></Avatar>
+                            <>
+                                <Space>
+                                    <span>{useAppStore.getState().userInfo?.username || '用户'}</span>
+                                    <Dropdown overlay={menus} trigger={['click']} >
+                                        <Avatar src={"/img/ht.gif"} size='large'></Avatar>
+                                    </Dropdown>
+                                </Space>
+                            </>
                         ) : (
                             <Button
                                 type="primary"

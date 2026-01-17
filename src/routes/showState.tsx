@@ -1,7 +1,7 @@
 // 使用react-redux的hooks来给一般组件获取全局状态
 import { useSelector, useDispatch } from "react-redux";
 // 导入reducer里面的方法
-import { setLogin, setTeacher, addNums, reduce } from "../store/globalSlice";
+import { addNums, reduce } from "../store/globalSlice";
 // 导入状态类型 用于寻找该状态
 import { GlobalState } from "../store/store";
 // 导入antd组件

@@ -193,6 +193,8 @@ request.useResponse(async (response) => {
 			}
 		} catch (error) {
 			// 忽略解析错误，使用默认错误信息
+			console.error('解析响应数据失败:', error);
+			errorMessage = '请求失败';
 		}
 
 		throw new Error(errorMessage);

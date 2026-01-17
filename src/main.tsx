@@ -24,33 +24,6 @@ import WriteArticle from './routes/markdown/WriteArticle.tsx';
 import Login from './routes/login.tsx';
 import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 
-// 主页导航栏数据
-const items = [
-	{
-		key: 'home',
-		label: '主页',
-	},
-	{
-		key: 'write-article',
-		label: '写文章',
-	},
-	{
-		key: 'about-project',
-		label: '关于项目',
-	},
-	{
-		key: 'document-center',
-		label: '文档中心',
-	},
-	{
-		key: 'concat-me',
-		label: '作者详情',
-	},
-	{
-		key: 'friend-chain',
-		label: '网站友链',
-	},
-];
 
 // 创建布局组件以使用useLocation钩子
 const AppLayout = () => {

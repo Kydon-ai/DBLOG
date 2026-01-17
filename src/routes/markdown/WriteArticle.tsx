@@ -1,5 +1,5 @@
 import { useState, FC } from 'react';
-import { Button, Input, Form, InputNumber, Switch, Card, Space, message } from 'antd';
+import { Button, Input, Form, Switch, Card, Space, message } from 'antd';
 import { SaveOutlined, EyeOutlined, EyeInvisibleOutlined, SendOutlined } from '@ant-design/icons';
 import './WriteArticle.css';
 import request from '../../utils/https/request';
