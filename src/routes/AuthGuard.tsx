@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '../store/useAppStore';
 
 interface AuthGuardProps {
 	children: React.ReactNode;
@@ -14,7 +15,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
 	// 简单的鉴权逻辑：检查localStorage中是否存在用户信息
 	// 实际项目中可以根据需求修改为更复杂的认证逻辑
-	const isAuthenticated = localStorage.getItem('user') !== null;
+	const isAuthenticated = useAppStore.getState().isLogin;
 
 	// 如果未认证，重定向到首页或登录页
 	// 这里为了演示，简单地显示一个未授权提示
