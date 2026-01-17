@@ -1,36 +1,40 @@
 .copyright {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    margin-top: auto; /* 确保始终在底部 */
-    p.filing  {
-      display: flex;
-      justify-content: center;
-    }
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: auto;
+
+  /* 确保始终在底部 */
+  p.filing {
+    display: flex;
+    justify-content: center;
   }
-  
+}
+
+.copyright p {
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+.copyright strong {
+  color: #ff6b6b;
+  /* 突出显示备案标识 */
+}
+
+.copyright a {
+  color: #4caf50;
+  /* 链接颜色 */
+  text-decoration: none;
+}
+
+.copyright a:hover {
+  text-decoration: underline;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
   .copyright p {
-    margin: 5px 0;
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
-  
-  .copyright strong {
-    color: #ff6b6b; /* 突出显示备案标识 */
-  }
-  
-  .copyright a {
-    color: #4CAF50; /* 链接颜色 */
-    text-decoration: none;
-  }
-  
-  .copyright a:hover {
-    text-decoration: underline;
-  }
-  
-  /* 响应式设计 */
-  @media (max-width: 480px) {
-    .copyright p {
-      font-size: 0.8em;
-    }
-  }
+}
