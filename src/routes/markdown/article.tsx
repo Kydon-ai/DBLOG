@@ -54,6 +54,15 @@ export default function ReadArticle() {
   const [isLiked, setIsLiked] = useState(false);
   const [isCollected, setIsCollected] = useState(false);
 
+  // 评论表单状态
+  const [commentForm, setCommentForm] = useState({
+    author_name: '',
+    author_email: '',
+    content: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
+
   const articleRef = useRef<HTMLDivElement>(null);
 
   // 获取文章详情
@@ -143,7 +152,7 @@ export default function ReadArticle() {
     }
   };
 
-  // 点赞评论
+  // 评论点赞
   const handleLikeComment = async (commentId: number) => {
     try {
       const response = await request.post(`/api/comments/${commentId}/like`);
@@ -163,6 +172,68 @@ export default function ReadArticle() {
       setComments(updateComments(comments));
     } catch (err) {
       console.error('评论点赞失败:', err);
+    }
+  };
+
+  // 提交评论
+  const handleSubmitComment = async () => {
+    if (!id) return;
+
+    // 表单验证
+    if (!commentForm.author_name.trim()) {
+      setCommentError('请输入作者名称');
+      return;
+    }
+
+    if (!commentForm.content.trim()) {
+      setCommentError('请输入评论内容');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setCommentError(null);
+
+      const response = await request.post(`/api/articles/${id}/comments`, commentForm);
+
+      if (response.status === 'created') {
+        // 更新文章评论数
+        if (article) {
+          setArticle({ ...article, comment_count: response.comment_count });
+        }
+
+        // 重新获取评论列表
+        const commentsResponse = await request.get(`/api/articles/${id}/comments`);
+        if (commentsResponse.comments) {
+          setComments(commentsResponse.comments);
+        }
+
+        // 清空表单
+        setCommentForm({
+          author_name: '',
+          author_email: '',
+          content: ''
+        });
+      }
+    } catch (err) {
+      console.error('提交评论失败:', err);
+      setCommentError('提交评论失败，请稍后重试');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // 表单输入变化处理
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCommentForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // 清除错误提示
+    if (commentError) {
+      setCommentError(null);
     }
   };
 
@@ -378,7 +449,58 @@ export default function ReadArticle() {
             <h3 style={{ marginBottom: '20px', fontSize: '16px', fontWeight: '600' }}>
               发表评论
             </h3>
+
+            {commentError && (
+              <div style={{
+                color: '#ff4d4f',
+                fontSize: '14px',
+                marginBottom: '15px',
+                padding: '10px',
+                backgroundColor: '#fff2f0',
+                borderRadius: '4px'
+              }}>
+                {commentError}
+              </div>
+            )}
+
+            <div style={{ marginBottom: '15px' }}>
+              <input
+                type="text"
+                name="author_name"
+                value={commentForm.author_name}
+                onChange={handleInputChange}
+                placeholder="请输入您的名称"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  border: '1px solid #d9d9d9',
+                  fontSize: '14px',
+                  marginBottom: '10px'
+                }}
+              />
+
+              <input
+                type="email"
+                name="author_email"
+                value={commentForm.author_email}
+                onChange={handleInputChange}
+                placeholder="请输入您的邮箱（选填）"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  border: '1px solid #d9d9d9',
+                  fontSize: '14px'
+                }}
+              />
+            </div>
+
             <textarea
+              name="content"
+              value={commentForm.content}
+              onChange={handleInputChange}
+              placeholder="请输入您的评论..."
               style={{
                 width: '100%',
                 minHeight: '100px',
@@ -389,21 +511,23 @@ export default function ReadArticle() {
                 resize: 'vertical',
                 marginBottom: '15px'
               }}
-              placeholder="请输入您的评论..."
             ></textarea>
+
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
+                onClick={handleSubmitComment}
+                disabled={submitting}
                 style={{
                   padding: '8px 24px',
-                  backgroundColor: '#1890ff',
+                  backgroundColor: submitting ? '#d9d9d9' : '#1890ff',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
-                  cursor: 'pointer',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
                   fontSize: '14px'
                 }}
               >
-                提交评论
+                {submitting ? '提交中...' : '提交评论'}
               </button>
             </div>
           </div>
