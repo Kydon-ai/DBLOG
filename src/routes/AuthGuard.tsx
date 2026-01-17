@@ -13,7 +13,6 @@ interface AuthGuardProps {
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 	const navigate = useNavigate();
 
-	// 简单的鉴权逻辑：检查localStorage中是否存在用户信息
 	// 实际项目中可以根据需求修改为更复杂的认证逻辑
 	const isAuthenticated = useAppStore.getState().isLogin;
 

@@ -4,9 +4,22 @@ type RequestInterceptor = (
 ) => Promise<RequestInit & { url: string }> | (RequestInit & { url: string });
 type ResponseInterceptor = (response: Response) => Promise<Response> | Response;
 
-// 从localStorage获取token，兼容旧的实现
+// 从localStorage获取token（兼容Zustand的persist中间件）
 function getAuthToken(): string {
-	return localStorage.getItem('token') || 'test_token';
+	try {
+		// 直接使用Zustand的存储键名获取token
+		const appStorage = localStorage.getItem('app-storage');
+		if (appStorage) {
+			const parsed = JSON.parse(appStorage);
+			console.log('getAuthToken - parsed app-storage:', parsed);
+			return parsed.state.token || '';
+		}
+		console.log('getAuthToken - no app-storage found');
+		return '';
+	} catch (error) {
+		console.error('Failed to get token from localStorage:', error);
+		return '';
+	}
 }
 
 class Request {
@@ -73,12 +86,6 @@ class Request {
 			for (const [key, value] of Object.entries(options.headers)) {
 				headers[key.toLowerCase()] = String(value);
 			}
-		}
-
-		// 对于登录和注册接口，不添加Authorization头
-		const isAuthUrl = config.url.includes('/api/auth/login') || config.url.includes('/api/auth/register');
-		if (!headers['authorization'] && !isAuthUrl) {
-			headers['authorization'] = `Bearer ${getAuthToken()}`;
 		}
 
 		// 设置默认Content-Type（FormData除外）
@@ -156,8 +163,8 @@ class Request {
 }
 
 // 导出一个单例
-// 使用相对路径，确保URL构建正确
-const request = new Request(''); // 使用空字符串作为baseURL
+// 使用后端服务器地址作为baseURL
+const request = new Request('http://localhost:8001'); // 使用后端服务器地址作为baseURL
 // 如果需要直接请求外部API，可以使用环境变量
 // const request = new Request(import.meta.env.VITE_API_BASE_URL);
 
@@ -168,12 +175,24 @@ request.useRequest((config) => {
 	}
 
 	const headers = config.headers as Record<string, string>;
-	// 对于登录和注册接口，不添加Authorization头
+	// 直接使用config.url判断是否为登录/注册接口
 	const isAuthUrl = config.url.includes('/api/auth/login') || config.url.includes('/api/auth/register');
-	if (!headers['Authorization'] && !headers['authorization'] && !isAuthUrl) {
-		headers['Authorization'] = `Bearer ${getAuthToken()}`;
+	console.log('Request Interceptor - URL:', config.url);
+	console.log('Request Interceptor - isAuthUrl:', isAuthUrl);
+
+	// 如果不是登录/注册接口，添加Authorization头
+	if (!isAuthUrl) {
+		const token = getAuthToken();
+		console.log('Request Interceptor - token:', token);
+		if (token) {
+			headers['Authorization'] = `Bearer ${token}`;
+			console.log('Request Interceptor - Added Authorization header');
+		} else {
+			console.log('Request Interceptor - No token available');
+		}
 	}
 
+	console.log('Request Interceptor - Final headers:', headers);
 	return config;
 });
 

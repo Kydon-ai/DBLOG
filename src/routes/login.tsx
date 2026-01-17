@@ -6,6 +6,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";
 import request from "../utils/https/request";
+// 从request.ts中导入getAuthToken函数
+declare function getAuthToken(): string;
 
 const loginCSS: React.CSSProperties = {
 	position: "relative",
@@ -58,16 +60,38 @@ export default function Login() {
 
 			if (response.access_token && response.user) {
 				// 存储登录状态和令牌
+				console.log('Login response - access_token:', response.access_token);
 				setLogin(true);
 				setToken(response.access_token);
+				// 同时直接保存到localStorage（作为后备）
+				const appStorage = localStorage.getItem('app-storage');
+				if (appStorage) {
+					try {
+						const parsed = JSON.parse(appStorage);
+						parsed.token = response.access_token;
+						localStorage.setItem('app-storage', JSON.stringify(parsed));
+						console.log('Login - updated app-storage:', parsed);
+					} catch (error) {
+						console.error('Login - failed to update app-storage:', error);
+					}
+				}
 				setUserInfo({
 					id: response.user.id,
 					username: response.user.username,
 					email: response.user.email,
+					full_name: response.user.full_name || "",
 					role: response.user.role || "user",
+					created_at: response.user.created_at || new Date().toISOString(),
 				});
 
 				message.success("登录成功");
+				// 延迟检查localStorage，确保Zustand的persist中间件有时间保存
+				setTimeout(() => {
+					const appStorage = localStorage.getItem('app-storage');
+					console.log('Login - final app-storage:', appStorage ? JSON.parse(appStorage) : 'none');
+					const token = getAuthToken();
+					console.log('Login - getAuthToken after login:', token);
+				}, 500);
 				navigate("/");
 			} else {
 				message.error("登录失败，请检查用户名和密码");

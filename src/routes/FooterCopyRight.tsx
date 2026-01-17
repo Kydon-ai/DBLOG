@@ -28,7 +28,7 @@ const FooterCopyright = () => {
   }, []);
 
   // 格式化时间差
-  const formatTime = (diff) => {
+  const formatTime = (diff: number) => {
     if (diff === 0) return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, ms: 0 };
 
     // 创建日期对象用于精确计算

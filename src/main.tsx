@@ -22,6 +22,7 @@ import FriendChain from './routes/normal/FriendChain.tsx';
 import ReadArticle from './routes/markdown/article.tsx';
 import WriteArticle from './routes/markdown/WriteArticle.tsx';
 import Login from './routes/login.tsx';
+import PersonalCenter from './routes/businessComponents/PersonalCenter.tsx';
 import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 
 
@@ -99,6 +100,7 @@ const AppLayout = () => {
 									}
 								/>
 								<Route path="/login" element={<Login />} />
+								<Route path="/profile-center" element={<PersonalCenter />} />
 							</Routes>
 						</div>
 						<FloatButton.BackTop />
