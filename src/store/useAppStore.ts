@@ -1,6 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+interface Route {
+  path: string;
+  name: string;
+  icon: string;
+  visible: boolean;
+}
+
+interface Permissions {
+  can_write: boolean;
+  can_manage_users: boolean;
+  can_manage_articles: boolean;
+}
+
 interface UserState {
   isLogin: boolean;
   isTeacher: boolean;
@@ -13,6 +26,8 @@ interface UserState {
     created_at: string;
   } | null;
   token: string | null;
+  routes: Route[];
+  permissions: Permissions;
   setLogin: (isLogin: boolean) => void;
   setTeacher: (isTeacher: boolean) => void;
   setUserInfo: (userInfo: {
@@ -24,6 +39,8 @@ interface UserState {
     created_at?: string;
   } | null) => void;
   setToken: (token: string | null) => void;
+  setRoutes: (routes: Route[]) => void;
+  setPermissions: (permissions: Permissions) => void;
   logout: () => void;
 }
 
@@ -64,12 +81,31 @@ export const useAppStore = create<AppStore>()(
       isTeacher: false,
       userInfo: null,
       token: null,
+      routes: [],
+      permissions: {
+        can_write: false,
+        can_manage_users: false,
+        can_manage_articles: false
+      },
 
       setLogin: (isLogin) => set({ isLogin }),
       setTeacher: (isTeacher) => set({ isTeacher }),
       setUserInfo: (userInfo) => set({ userInfo: userInfo ? { ...userInfo, full_name: userInfo.full_name || '', created_at: userInfo.created_at || new Date().toISOString() } : null }),
       setToken: (token) => set({ token }),
-      logout: () => set({ isLogin: false, isTeacher: false, userInfo: null, token: null }),
+      setRoutes: (routes) => set({ routes }),
+      setPermissions: (permissions) => set({ permissions }),
+      logout: () => set({
+        isLogin: false,
+        isTeacher: false,
+        userInfo: null,
+        token: null,
+        routes: [],
+        permissions: {
+          can_write: false,
+          can_manage_users: false,
+          can_manage_articles: false
+        }
+      }),
 
       // Counter state
       clickNums: 0,

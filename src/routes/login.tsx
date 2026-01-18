@@ -47,7 +47,7 @@ export default function Login() {
 		email: "",
 	});
 	const navigate = useNavigate();
-	const { setLogin, setToken, setUserInfo } = useAppStore();
+	const { setLogin, setToken, setUserInfo, setRoutes, setPermissions } = useAppStore();
 
 	const handleLogin = async () => {
 		if (!loginForm.username || !loginForm.password) {
@@ -85,6 +85,14 @@ export default function Login() {
 					created_at: response.user.created_at || new Date().toISOString(),
 				});
 
+				// 存储路由模板和权限信息
+				if (response.routes) {
+					setRoutes(response.routes);
+				}
+				if (response.permissions) {
+					setPermissions(response.permissions);
+				}
+
 				message.success("登录成功");
 				// 延迟检查localStorage，确保Zustand的persist中间件有时间保存
 				setTimeout(() => {
@@ -106,7 +114,7 @@ export default function Login() {
 	};
 
 	const handleRegister = async () => {
-		if (!registerForm.username || !registerForm.password || !registerForm.email) {
+		if (!registerForm.username || !registerForm.password) {
 			message.error("请填写完整的注册信息");
 			return;
 		}
@@ -189,13 +197,13 @@ export default function Login() {
 						value={registerForm.username}
 						onChange={(e) => setRegisterForm({ ...registerForm, username: e.target.value })}
 					/>
-					<Input
+					{/* <Input
 						placeholder="请输入您的邮箱"
 						prefix={<MailOutlined />}
 						style={{ marginBottom: "12px" }}
 						value={registerForm.email}
 						onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
-					/>
+					/> */}
 					<Input.Password
 						placeholder="请输入预注册密码"
 						prefix={<LockOutlined />}
