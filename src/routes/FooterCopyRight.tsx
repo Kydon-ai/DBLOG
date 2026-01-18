@@ -14,7 +14,7 @@ const FooterCopyright = () => {
   const calculateDifference = () => {
     const now = new Date().getTime();
     const diff = now - targetDate.getTime();
-    
+
     // 确保时间差非负（应用场景保证在目标日期之后）
     setTimeDiff(Math.max(diff, 0));
   };
@@ -23,7 +23,7 @@ const FooterCopyright = () => {
   useEffect(() => {
     calculateDifference();
     const interval = setInterval(calculateDifference, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -73,31 +73,31 @@ const FooterCopyright = () => {
 
   // 动态构建显示字符串
   const timeComponents = [
-    years> 0 ? `${String(years).padStart(2,"0")}年`: '',
-    months> 0 ?  `${String(months).padStart(2,"0")}个月`: '',
-    days> 0 ? `${String(days).padStart(2,"0")}天`: '',
-    hours> 0 ? `${String(hours).padStart(2,"0")}小时`: '',
-    minutes> 0 ? `${String(minutes).padStart(2,"0")}分钟`: '',
-    seconds> 0 ? `${String(seconds).padStart(2,"0")}秒`: '',
-    `${String(ms).padStart(3,"0")}毫秒` 
+    years > 0 ? `${String(years).padStart(2, "0")}年` : '',
+    months > 0 ? `${String(months).padStart(2, "0")}个月` : '',
+    days > 0 ? `${String(days).padStart(2, "0")}天` : '',
+    hours > 0 ? `${String(hours).padStart(2, "0")}小时` : '',
+    minutes > 0 ? `${String(minutes).padStart(2, "0")}分钟` : '',
+    seconds > 0 ? `${String(seconds).padStart(2, "0")}秒` : '',
+    `${String(ms).padStart(3, "0")}毫秒`
   ].filter(Boolean).join(' ');
-  
+
   return (
     <div className="copyright">
-      <p>© 2024-2025 www.qidong.tech &nbsp;
+      <p>© 2024-2026 www.qidong.tech &nbsp;
         {/* 20240821 */}
         <span>本站已运行：{timeComponents}</span>
       </p>
-      
+
       <p className='filing'>
         {/* <strong>ICP备案信息：</strong> */}
         <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
-            湘ICP备2024098725号
+          湘ICP备2024098725号
         </a> &nbsp;&nbsp;
-        <Image 
-          src={"/img/ba.png"} 
+        <Image
+          src={"/img/ba.png"}
           width={15} // 按实际尺寸调整
-          preview={false} 
+          preview={false}
           alt="公安备案标识"
         />
         <a href="https://beian.mps.gov.cn/#/query/webSearch?code=44030002006655" rel="noreferrer" target="_blank">粤公网安备44030002006655号</a>
