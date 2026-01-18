@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypePrism from 'rehype-prism-plus';
 import { LikeOutlined, StarOutlined, CommentOutlined } from '@ant-design/icons';
 import request from '../../utils/https/request';
+import { useAppStore } from '../../store/useAppStore';
 
 // 文章数据类型定义
 interface Article {
@@ -169,13 +170,13 @@ export default function ReadArticle() {
 
   // 提交评论
   const handleSubmitComment = async () => {
-    if (!id) return;
-
-    // 表单验证
-    if (!commentForm.author_name.trim()) {
-      setCommentError('请输入作者名称');
+    if (!id) {
+      setCommentError('文章界面参数异常');
       return;
     }
+    // 获取当前用户信息
+    const currentUser = useAppStore.getState().userInfo;
+    const currentAuthorName = currentUser?.username || "";
 
     if (!commentForm.content.trim()) {
       setCommentError('请输入评论内容');
@@ -186,7 +187,13 @@ export default function ReadArticle() {
       setSubmitting(true);
       setCommentError(null);
 
-      const response = await request.post(`/api/articles/${id}/comments`, commentForm);
+      // 使用当前用户信息构建评论数据
+      const commentData = {
+        ...commentForm,
+        author_name: currentAuthorName
+      };
+
+      const response = await request.post(`/api/articles/${id}/comments`, commentData);
 
       if (response.status === 'created') {
         // 更新文章评论数
@@ -456,7 +463,7 @@ export default function ReadArticle() {
             )}
 
             <div style={{ marginBottom: '15px' }}>
-              <input
+              {/* <input
                 type="text"
                 name="author_name"
                 value={commentForm.author_name}
@@ -470,7 +477,7 @@ export default function ReadArticle() {
                   fontSize: '14px',
                   marginBottom: '10px'
                 }}
-              />
+              /> */}
 
               <input
                 type="email"
