@@ -1,4 +1,5 @@
-import LoginImg from "../assets/more-leaves.png";
+// import LoginImg from "../assets/more-leaves.png";
+import LoginImg from "/img/Pikachu.png";
 import { Card, Tabs, Input, Button, message } from "antd";
 import type { TabsProps } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
@@ -15,21 +16,21 @@ const loginCSS: React.CSSProperties = {
 	justifyContent: "center",
 	alignItems: "center",
 	minHeight: "100vh",
-	backgroundImage: `url(${LoginImg})`,
+	// backgroundImage: `url(${LoginImg})`,
 	backgroundSize: "cover",
 	backgroundPosition: "center",
 };
 
 const cardCSS: React.CSSProperties = {
 	display: "flex",
-	maxWidth: "700px",
+	maxWidth: "50%",
 	width: "100%",
 	margin: "0 20px",
 };
 
 const cardItemCSS: React.CSSProperties = {
 	display: "flex",
-	minWidth: "300px",
+	minWidth: "50%",
 	maxWidth: "50%",
 };
 
@@ -225,16 +226,16 @@ export default function Login() {
 
 	return (
 		<div style={loginCSS}>
-			<div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-				<Card style={cardCSS}>
-					<Card style={{ ...cardItemCSS, padding: 0 }}>
+			<div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", marginTop: "-200px" }}>
+				<Card style={cardCSS} styles={{ body: { display: 'flex' } }}>
+					<Card style={{ ...cardItemCSS, padding: 0 }} styles={{ body: { display: 'flex' } }}>
 						<img
 							src={LoginImg}
 							alt="图片加载失败"
 							style={{ height: "100%", width: "100%", objectFit: "cover" }}
 						/>
 					</Card>
-					<Card style={{ ...cardItemCSS, padding: "30px" }}>
+					<Card style={{ ...cardItemCSS, padding: "30px" }} styles={{ body: { display: 'flex', flexDirection: 'column' } }}>
 						<h2 style={{ fontSize: "24px", fontWeight: "600", marginBottom: "20px", textAlign: "center" }}>
 							DBLOG
 						</h2>
@@ -246,6 +247,6 @@ export default function Login() {
 					</Card>
 				</Card>
 			</div>
-		</div>
+		</div >
 	);
 }
