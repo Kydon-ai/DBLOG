@@ -24,6 +24,8 @@ interface UserState {
     full_name: string;
     role: string;
     created_at: string;
+    avatar_url?: string;
+    bio?: string;
   } | null;
   token: string | null;
   routes: Route[];
@@ -37,11 +39,23 @@ interface UserState {
     full_name?: string;
     role: string;
     created_at?: string;
+    avatar_url?: string;
+    bio?: string;
   } | null) => void;
   setToken: (token: string | null) => void;
   setRoutes: (routes: Route[]) => void;
   setPermissions: (permissions: Permissions) => void;
   logout: () => void;
+  updateUserInfo: (userInfo: Partial<{
+    id: number;
+    username: string;
+    email: string;
+    full_name?: string;
+    role: string;
+    created_at?: string;
+    avatar_url?: string;
+    bio?: string;
+  }>) => void;
 }
 
 interface CounterState {
@@ -90,7 +104,21 @@ export const useAppStore = create<AppStore>()(
 
       setLogin: (isLogin) => set({ isLogin }),
       setTeacher: (isTeacher) => set({ isTeacher }),
-      setUserInfo: (userInfo) => set({ userInfo: userInfo ? { ...userInfo, full_name: userInfo.full_name || '', created_at: userInfo.created_at || new Date().toISOString() } : null }),
+      setUserInfo: (userInfo) => set({
+        userInfo: userInfo ? {
+          ...userInfo,
+          full_name: userInfo.full_name || '',
+          created_at: userInfo.created_at || new Date().toISOString(),
+          avatar_url: userInfo.avatar_url || undefined,
+          bio: userInfo.bio || undefined
+        } : null
+      }),
+      updateUserInfo: (userInfo) => set((state) => ({
+        userInfo: userInfo ? {
+          ...state.userInfo,
+          ...userInfo
+        } : state.userInfo
+      })),
       setToken: (token) => set({ token }),
       setRoutes: (routes) => set({ routes }),
       setPermissions: (permissions) => set({ permissions }),

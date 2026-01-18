@@ -20,9 +20,16 @@ interface Article {
   collect_count: number;
   created_at: string;
   published_at: string | null;
+  updated_at: string | null;
   comments?: HierarchicalComment[];
+  author?: AuthorInfo;
 }
 
+interface AuthorInfo {
+  id: number;
+  username: string;
+  avatar_url?: string;
+}
 // 层级评论数据类型定义
 interface HierarchicalComment {
   id: number;
@@ -381,7 +388,16 @@ export default function ReadArticle() {
           borderBottom: '1px solid #f0f0f0'
         }}>
           <div>
-            <span>发布时间: {new Date(article.published_at || article.created_at).toLocaleDateString()}</span>
+            <span>作者: {article.author?.username}</span>
+            <span style={{ margin: '0 10px' }}>|</span>
+            <span>创建时间: {new Date(article.created_at).toLocaleString()}</span>
+            {/* 如果更新时间不等于创建时间，显示更新时间 */}
+            {article.updated_at !== article.created_at && (
+              <>
+                <span style={{ margin: '0 10px' }}>|</span>
+                <span>更新时间: {new Date(article.updated_at || "更新时间获取失败").toLocaleString()}</span>
+              </>
+            )}
             <span style={{ margin: '0 10px' }}>|</span>
             <span>浏览量: {article.view_count}</span>
           </div>

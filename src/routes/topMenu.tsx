@@ -116,11 +116,11 @@ const TopMenu: React.FC = () => {
         <Row>
             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', cursor: "pointer" }} onClick={handleClickLogo}>
-                    <img style={{ height: '2rem', width: '2rem', marginRight: '5px' }} src="/img/yctf.jpg" alt="LOGO加载失败了" />
+                    <img style={{ height: '2rem', width: '2rem', marginRight: '5px' }} src="/img/DBLOG.png" alt="LOGO加载失败了" />
 
                     <div style={{ zoom: "60%" }}>
                         <p style={{ fontSize: '2rem', textAlign: 'justify', margin: 0, fontWeight: 'lighter' }}>DBLOG<span style={{ display: 'inline-block', width: '0%' }}></span></p>
-                        <p style={{ fontSize: '1rem', textAlign: 'justify', margin: 0, fontWeight: 'bolder' }}>雏草姬的温暖港湾<span style={{ display: 'inline-block', width: '0%' }}></span></p>
+                        <p style={{ fontSize: '1rem', textAlign: 'justify', margin: 0, fontWeight: 'bolder' }}>经世致用，文理兼修。<span style={{ display: 'inline-block', width: '0%' }}></span></p>
                     </div>
                 </div>
                 {isHorizontal ? (

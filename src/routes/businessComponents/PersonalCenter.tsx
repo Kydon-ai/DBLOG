@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Tabs, Card, List, Avatar, Button, Typography, Space, Spin, message } from 'antd';
-import { HeartOutlined, CommentOutlined, StarOutlined, UserOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useRef } from 'react';
+import { Tabs, Card, List, Avatar, Button, Typography, Space, Spin, message, Modal, Input, Upload, Form } from 'antd';
+import { HeartOutlined, CommentOutlined, StarOutlined, UserOutlined, UploadOutlined, EditOutlined } from '@ant-design/icons';
 import { useAppStore } from '../../store/useAppStore';
 import { useNavigate } from 'react-router-dom';
 import request from '../../utils/https/request';
@@ -28,6 +28,10 @@ const PersonalCenter: React.FC = () => {
   const [collectedBlogs, setCollectedBlogs] = useState<BlogItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<any>(userInfo);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [editModalVisible, setEditModalVisible] = useState<boolean>(false);
+  const [editForm] = Form.useForm();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 如果未登录，重定向到登录页面
   useEffect(() => {
@@ -49,12 +53,132 @@ const PersonalCenter: React.FC = () => {
     });
   };
 
+  // 处理头像上传
+  const handleAvatarUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await request.post('/api/users/avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 'success') {
+        // 获取完整的头像URL
+        const baseUrl = 'http://localhost:8001';
+        const fullAvatarUrl = response.avatar_url.startsWith('http')
+          ? response.avatar_url
+          : baseUrl + response.avatar_url;
+
+        // 更新用户信息（包含完整URL）
+        const updatedUser = {
+          ...response.user,
+          avatar_url: fullAvatarUrl
+        };
+
+        // 更新本地状态
+        setUserDetails(updatedUser);
+
+        // 更新全局状态（同时更新userInfo和avatar字段）
+        const appStore = useAppStore.getState();
+        appStore.updateUserInfo(updatedUser);
+        appStore.setAvatar(fullAvatarUrl);
+
+        message.success('头像上传成功');
+      } else {
+        message.error(response.message || '头像上传失败');
+      }
+    } catch (error: any) {
+      message.error('头像上传失败: ' + (error.response?.data?.detail || error.message));
+      console.error('头像上传失败:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // 打开编辑信息弹窗
+  const handleEditInfo = () => {
+    editForm.setFieldsValue({
+      username: userDetails?.username,
+      email: userDetails?.email,
+      full_name: userDetails?.full_name,
+      bio: userDetails?.bio,
+    });
+    setEditModalVisible(true);
+  };
+
+  // 保存用户信息
+  const handleSaveUserInfo = async (values: any) => {
+    try {
+      setLoading(true);
+      const response = await request.put('/api/users/profile', values);
+
+      if (response.status === 'success') {
+        // 获取完整的头像URL
+        const baseUrl = 'http://localhost:8001';
+        let updatedUser = response.user;
+
+        if (updatedUser.avatar_url) {
+          const fullAvatarUrl = updatedUser.avatar_url.startsWith('http')
+            ? updatedUser.avatar_url
+            : baseUrl + updatedUser.avatar_url;
+          updatedUser = {
+            ...updatedUser,
+            avatar_url: fullAvatarUrl
+          };
+        }
+
+        // 更新本地状态
+        setUserDetails(updatedUser);
+
+        // 更新全局状态
+        const appStore = useAppStore.getState();
+        appStore.updateUserInfo(updatedUser);
+        if (updatedUser.avatar_url) {
+          appStore.setAvatar(updatedUser.avatar_url);
+        }
+
+        message.success('用户信息更新成功');
+        setEditModalVisible(false);
+      } else {
+        message.error(response.message || '用户信息更新失败');
+      }
+    } catch (error: any) {
+      message.error('用户信息更新失败: ' + (error.response?.data?.detail || error.message));
+      console.error('用户信息更新失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // 获取用户详细信息
   const fetchUserInfo = async () => {
     try {
       setLoading(true);
       const response = await request.get('/api/auth/me');
+
+      // 获取完整的头像URL
+      const baseUrl = 'http://localhost:8001';
+      if (response.avatar_url) {
+        const fullAvatarUrl = response.avatar_url.startsWith('http')
+          ? response.avatar_url
+          : baseUrl + response.avatar_url;
+        response.avatar_url = fullAvatarUrl;
+      }
+
+      // 更新本地状态
       setUserDetails(response);
+
+      // 更新全局状态（同时更新userInfo和avatar字段）
+      const appStore = useAppStore.getState();
+      appStore.updateUserInfo(response);
+      if (response.avatar_url) {
+        appStore.setAvatar(response.avatar_url);
+      }
+
     } catch (error) {
       console.error('获取用户信息失败:', error);
       message.error('获取用户信息失败，请稍后重试');
@@ -200,22 +324,68 @@ const PersonalCenter: React.FC = () => {
         <Spin spinning={loading}>
           <Card
             title="用户信息"
+            extra={
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={handleEditInfo}
+              >
+                编辑信息
+              </Button>
+            }
             style={{ backgroundColor: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <Avatar
-                size={80}
-                src={userDetails?.avatar_url}
-                icon={<UserOutlined />}
-                style={{ backgroundColor: '#1890ff' }}
-              />
+              <div style={{ position: 'relative' }}>
+                <Avatar
+                  size={80}
+                  src={userDetails?.avatar_url}
+                  icon={<UserOutlined />}
+                  style={{ backgroundColor: '#1890ff' }}
+                />
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    border: '2px solid white',
+                    borderRadius: '50%',
+                    width: 32,
+                    height: 32,
+                    padding: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  loading={uploading}
+                >
+                  <UploadOutlined style={{ fontSize: 16 }} />
+                </Button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      handleAvatarUpload(file);
+                    }
+                    // 清空文件输入，以便下次可以选择同一个文件
+                    e.target.value = '';
+                  }}
+                />
+              </div>
               <div>
                 <Title level={3} style={{ margin: 0 }}>
+                  {/* 用户名在这里 */}
                   {userDetails?.full_name || userDetails?.username || '用户'}
                 </Title>
                 <Space direction="vertical" size="small">
-                  <Text type="secondary">用户名: {userDetails?.username}</Text>
-                  <Text type="secondary">邮箱: {userDetails?.email}</Text>
+                  <Text type="secondary">邮箱: {userDetails?.email === "" ? '未绑定' : userDetails.email}</Text>
                   <Text type="secondary">角色: {userDetails?.role === 'admin' ? '管理员' : '普通用户'}</Text>
                   <Text type="secondary">注册时间: {userDetails?.created_at ? formatDate(userDetails.created_at) : '未知'}</Text>
                   {userDetails?.bio && <Text type="secondary">个人简介: {userDetails.bio}</Text>}
@@ -224,6 +394,65 @@ const PersonalCenter: React.FC = () => {
             </div>
           </Card>
         </Spin>
+
+        {/* 编辑用户信息弹窗 */}
+        <Modal
+          title="编辑用户信息"
+          open={editModalVisible}
+          onCancel={() => setEditModalVisible(false)}
+          footer={null}
+          width={500}
+        >
+          <Form
+            form={editForm}
+            layout="vertical"
+            onFinish={handleSaveUserInfo}
+          >
+            <Form.Item
+              name="username"
+              label="用户名"
+              rules={[
+                { required: true, message: '请输入用户名' },
+                { min: 3, max: 50, message: '用户名长度必须在3到50个字符之间' },
+              ]}
+            >
+              <Input placeholder="请输入用户名" />
+            </Form.Item>
+
+            <Form.Item
+              name="email"
+              label="邮箱"
+              rules={[
+                { type: 'email', message: '请输入有效的邮箱地址' },
+              ]}
+            >
+              <Input placeholder="请输入邮箱地址" />
+            </Form.Item>
+
+            <Form.Item
+              name="full_name"
+              label="姓名"
+            >
+              <Input placeholder="请输入姓名" />
+            </Form.Item>
+
+            <Form.Item
+              name="bio"
+              label="个人简介"
+            >
+              <Input.TextArea placeholder="请输入个人简介" rows={4} />
+            </Form.Item>
+
+            <Form.Item>
+              <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
+                <Button onClick={() => setEditModalVisible(false)}>取消</Button>
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  保存
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Modal>
 
         {/* 内容标签页 */}
         <Card style={{ backgroundColor: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
