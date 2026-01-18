@@ -30,7 +30,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
   };
 
   // 使用默认图片URL
-  const imageUrl = '/image/default_blog.svg';
+  const imageUrl = '/img/default_blog.svg';
 
   return (
     <div

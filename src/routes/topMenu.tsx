@@ -8,7 +8,7 @@ import { useAppStore } from '../store/useAppStore';
 const TopMenu: React.FC = () => {
     const [current, setCurrent] = useState('home');
     const { size, isHorizontal } = useWindowSize();
-    const { isLogin } = useAppStore();
+    const { isLogin, avatar } = useAppStore();
 
     console.log("查看全屏宽高：", size.width, size.height, isHorizontal)
     const items = [
@@ -94,7 +94,7 @@ const TopMenu: React.FC = () => {
                                 <Space>
                                     <span>{useAppStore.getState().userInfo?.username || '用户未设置昵称'}</span>
                                     <Dropdown menu={{ items: userItems, onClick: onClick }} placement="bottomRight" >
-                                        <Avatar src={"/img/ht.gif"} size='large'></Avatar>
+                                        <Avatar src={avatar} size='large'></Avatar>
                                     </Dropdown>
                                 </Space>
                             </>

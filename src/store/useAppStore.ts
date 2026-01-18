@@ -48,8 +48,10 @@ interface DemoState {
 interface TestState {
   name: string;
   age: number;
+  avatar: string;
   setName: (name: string) => void;
   setAge: (age: number) => void;
+  setAvatar: (avatar: string) => void;
 }
 
 interface AppStore extends UserState, CounterState, ArticleState, DemoState, TestState { }
@@ -87,8 +89,10 @@ export const useAppStore = create<AppStore>()(
       // Test state
       name: 'test',
       age: 18,
+      avatar: '/img/user.png',
       setName: (name) => set({ name }),
       setAge: (age) => set({ age }),
+      setAvatar: (avatar) => set({ avatar }),
     }),
     {
       name: 'app-storage',
