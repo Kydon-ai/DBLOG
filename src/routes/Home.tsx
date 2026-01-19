@@ -6,7 +6,7 @@ import request from '../utils/https/request';
 interface Article {
   id: number;
   title: string;
-  slug: string;
+  slug: string | null;
   summary: string | null;
   tags: string | null;
   is_published: boolean;

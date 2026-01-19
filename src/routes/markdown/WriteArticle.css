@@ -1,89 +1,159 @@
 .write-article-container {
-  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-}
-
-.markdown-editor {
-  font-size: 14px;
-  line-height: 1.6;
-  resize: vertical;
-}
-
-.markdown-editor:focus {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  width: 100%;
+  max-width: 1800px;
 }
 
 .write-article-container .ant-card {
   margin-bottom: 20px;
 }
 
-.write-article-container .ant-form-item {
-  margin-bottom: 24px;
+/* 三栏布局 */
+.three-column-layout {
+  display: flex;
+  gap: 20px;
+  min-height: 90vh;
 }
 
-.write-article-container .ant-btn {
-  margin-right: 8px;
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* 编辑器列 */
+.editor-column {
+  flex: 1.2;
+}
+
+/* 预览列 */
+.preview-column {
+  flex: 1.3;
+}
+
+/* 设置列 */
+.settings-column {
+  flex: 0.8;
+  min-width: 320px;
+}
+
+/* 列标题 */
+.column-title {
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #1890ff;
+  color: #1890ff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Markdown编辑器 */
+.markdown-editor {
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  flex: 1;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  background-color: #fafafa;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.markdown-editor:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  background-color: #fff;
+}
+
+/* 预览卡片 */
+.preview-card {
+  flex: 1;
+  border: none;
+  box-shadow: none;
+}
+
+/* 预览内容 */
 .preview-content {
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: #fafafa;
   border-radius: 4px;
-  min-height: 300px;
+  min-height: 400px;
+  flex: 1;
+  overflow-y: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* 预览内容样式 */
 .preview-content h1 {
   font-size: 24px;
   margin-bottom: 20px;
   border-bottom: 1px solid #e8e8e8;
   padding-bottom: 10px;
+  color: #262626;
 }
 
 .preview-content h2 {
   font-size: 20px;
   margin-top: 30px;
   margin-bottom: 16px;
+  color: #262626;
 }
 
 .preview-content h3 {
   font-size: 16px;
   margin-top: 24px;
   margin-bottom: 12px;
+  color: #262626;
 }
 
 .preview-content p {
   margin-bottom: 16px;
+  color: #595959;
+  line-height: 1.8;
 }
 
 .preview-content code {
   background-color: #f0f0f0;
   padding: 2px 4px;
   border-radius: 3px;
-  font-family: monospace;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 12px;
 }
 
 .preview-content pre {
-  background-color: #f0f0f0;
+  background-color: #282c34;
+  color: #abb2bf;
   padding: 16px;
   border-radius: 4px;
   overflow-x: auto;
   margin-bottom: 16px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .preview-content pre code {
   background-color: transparent;
   padding: 0;
+  color: inherit;
+  font-size: inherit;
 }
 
 .preview-content ul, .preview-content ol {
   margin-bottom: 16px;
   padding-left: 24px;
+  color: #595959;
 }
 
 .preview-content li {
   margin-bottom: 8px;
+  line-height: 1.8;
 }
 
 .preview-content blockquote {
@@ -91,10 +161,111 @@
   padding-left: 16px;
   color: #666;
   margin-bottom: 16px;
+  background-color: #e6f7ff;
+  padding: 12px 16px;
+  border-radius: 0 4px 4px 0;
 }
 
 .preview-content img {
   max-width: 100%;
   height: auto;
   margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+.preview-content a {
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.preview-content a:hover {
+  text-decoration: underline;
+}
+
+.preview-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.preview-content th {
+  border: 1px solid #e8e8e8;
+  padding: 8px 12px;
+  background-color: #fafafa;
+  text-align: left;
+  font-weight: 600;
+}
+
+.preview-content td {
+  border: 1px solid #e8e8e8;
+  padding: 8px 12px;
+}
+
+/* 表单样式 */
+.write-article-container .ant-form-item {
+  margin-bottom: 20px;
+}
+
+.write-article-container .ant-btn {
+  margin-right: 8px;
+}
+
+/* 设置列中的表单 */
+.settings-column .ant-form {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* 滚动条样式 */
+.three-column-layout ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.three-column-layout ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.three-column-layout ::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.three-column-layout ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 响应式布局 */
+@media (max-width: 1400px) {
+  .three-column-layout {
+    flex-direction: column;
+  }
+  
+  .column {
+    margin-bottom: 20px;
+    min-height: auto;
+  }
+  
+  .settings-column {
+    min-width: auto;
+  }
+  
+  .markdown-editor {
+    height: 400px;
+  }
+  
+  .preview-content {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .write-article-container {
+    padding: 10px;
+  }
+  
+  .column {
+    padding: 15px;
+  }
 }
