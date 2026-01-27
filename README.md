@@ -1,4 +1,4 @@
-node version 18.18.1
+node version 18.18.2
 
 技术栈： React18 、 Redux toolkit 、Redux Router 、Redux Persist、Ant Design
 

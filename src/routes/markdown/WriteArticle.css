@@ -113,7 +113,7 @@
 }
 
 .preview-content p {
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   color: #595959;
   line-height: 1.8;
 }
@@ -127,9 +127,9 @@
 }
 
 .preview-content pre {
-  background-color: #282c34;
+  /* background-color: #282c34; */
   color: #abb2bf;
-  padding: 16px;
+  /* padding: 16px; */
   border-radius: 4px;
   overflow-x: auto;
   margin-bottom: 16px;
@@ -145,7 +145,8 @@
   font-size: inherit;
 }
 
-.preview-content ul, .preview-content ol {
+.preview-content ul,
+.preview-content ol {
   margin-bottom: 16px;
   padding-left: 24px;
   color: #595959;
@@ -160,9 +161,9 @@
   border-left: 4px solid #1890ff;
   padding-left: 16px;
   color: #666;
-  margin-bottom: 16px;
+  margin: 16px 0px;
   background-color: #e6f7ff;
-  padding: 12px 16px;
+  /* padding: 12px 16px; */
   border-radius: 0 4px 4px 0;
 }
 
@@ -241,20 +242,20 @@
   .three-column-layout {
     flex-direction: column;
   }
-  
+
   .column {
     margin-bottom: 20px;
     min-height: auto;
   }
-  
+
   .settings-column {
     min-width: auto;
   }
-  
+
   .markdown-editor {
     height: 400px;
   }
-  
+
   .preview-content {
     min-height: 400px;
   }
@@ -264,7 +265,7 @@
   .write-article-container {
     padding: 10px;
   }
-  
+
   .column {
     padding: 15px;
   }
