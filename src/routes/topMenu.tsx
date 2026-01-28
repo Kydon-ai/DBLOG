@@ -23,18 +23,18 @@ const TopMenu: React.FC = () => {
                     key: 'home',
                     label: '主页',
                 },
-                {
-                    key: 'write-article',
-                    label: '写文章',
-                    disabled: !permissions.can_write,
-                },
+                // {
+                //     key: 'write-article',
+                //     label: '写文章',
+                //     disabled: !permissions.can_write,
+                // },
                 {
                     key: 'about-project',
                     label: '关于项目',
                 },
                 {
                     key: 'concat-me',
-                    label: '作者详情',
+                    label: '站长详情',
                 },
                 {
                     key: 'friend-chain',
