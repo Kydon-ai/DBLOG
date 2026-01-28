@@ -127,7 +127,7 @@
 }
 
 .preview-content pre {
-  /* background-color: #282c34; */
+  background-color: #282c34;
   color: #abb2bf;
   /* padding: 16px; */
   border-radius: 4px;
@@ -235,6 +235,10 @@
 
 .three-column-layout ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.preview-content pre[class*="language-"] {
+  padding: unset;
 }
 
 /* 响应式布局 */

@@ -5,7 +5,12 @@ import rehypePrism from 'rehype-prism-plus';
 import { LikeOutlined, StarOutlined, CommentOutlined } from '@ant-design/icons';
 import request from '../../utils/https/request';
 import { useAppStore } from '../../store/useAppStore';
-
+import { CodeBlock } from './WriteArticle';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import remarkEmoji from 'remark-emoji';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 // 文章数据类型定义
 interface Article {
   id: number;
@@ -401,7 +406,7 @@ export default function ReadArticle() {
             <span style={{ margin: '0 10px' }}>|</span>
             <span>浏览量: {article.view_count}</span>
           </div>
-          {article.tags && (
+          {/* {article.tags && (
             <div style={{ display: 'flex', gap: '8px' }}>
               {article.tags.split(',').map((tag, index) => (
                 <span key={index} style={{
@@ -414,7 +419,7 @@ export default function ReadArticle() {
                 </span>
               ))}
             </div>
-          )}
+          )} */}
         </div>
 
         {/* 文章内容 */}
@@ -424,9 +429,47 @@ export default function ReadArticle() {
           color: '#262626',
           marginBottom: '40px'
         }}>
-          <ReactMarkdown rehypePlugins={[rehypePrism]}>
+          {/* <ReactMarkdown rehypePlugins={[rehypePrism]}>
             {article.content}
-          </ReactMarkdown>
+          </ReactMarkdown> */}
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkEmoji, remarkMath]}
+            rehypePlugins={[rehypeRaw, rehypeKatex, rehypePrism]}
+            children={article.content}
+            components={{
+              h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px' }} />,
+              h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
+              h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
+              p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
+              code: ({ node, inline, className, children, ...props }) => {
+                if (inline) {
+                  return (
+                    <code
+                      {...props}
+                      style={{
+                        backgroundColor: '#fafafa',
+                        padding: '2px 4px',
+                        borderRadius: '3px',
+                        fontFamily: 'monospace'
+                      }}
+                    >{children}</code>
+                  );
+                }
+
+                return <CodeBlock className={className} children={children} {...props} />;
+              },
+              ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
+              ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
+              li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
+              blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px' }} />,
+              img: ({ node, ...props }) => <img {...props} style={{ maxWidth: '100%', height: 'auto', marginBottom: '16px' }} />,
+              a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
+              table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
+              th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
+              td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
+              mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px' }} />
+            }}
+          />
         </div>
 
         {/* 评论区 */}

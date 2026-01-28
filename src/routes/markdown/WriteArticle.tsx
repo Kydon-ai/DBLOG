@@ -1,13 +1,118 @@
-import { useState, FC, useEffect } from 'react';
+import { useState, FC, useEffect, Children } from 'react';
 import { Button, Input, Form, Switch, Card, Space, message, Tag, Select } from 'antd';
-import { SaveOutlined, SendOutlined } from '@ant-design/icons';
+import { ConsoleSqlOutlined, SaveOutlined, SendOutlined } from '@ant-design/icons';
 import './WriteArticle.css';
 import request from '../../utils/https/request';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import remarkEmoji from 'remark-emoji';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import rehypePrism from 'rehype-prism-plus';
+import 'katex/dist/katex.min.css';
+import 'prismjs/themes/prism-tomorrow.css';
+import React from 'react';
 
 const { TextArea } = Input;
 const { Option } = Select;
+
+// CodeBlock component for handling code blocks with copy functionality
+export const CodeBlock: React.FC<{
+    className?: string;
+    children: React.ReactNode;
+    [key: string]: any;
+}> = ({ className, children, ...props }) => {
+    const [isCopied, setIsCopied] = React.useState(false);
+    const handleCopy = async () => {
+
+        // const childrenArray = React.Children.toArray(children);
+        // 递归提取文本内容的函数
+        const extractTextFromChildren: any = (children: any) => {
+            // 使用 React.Children.toArray 保证 children 总是一个数组，便于安全遍历 [3,8](@ref)
+            return Children.toArray(children).map(child => {
+                // 情况1: child 是字符串或数字，直接返回
+                if (typeof child === 'string' || typeof child === 'number') {
+                    return child;
+                }
+                // 情况2: child 是合法的 React 元素（即你提供的对象结构）
+                // 根据你的数据结构，它具有 $$typeof: Symbol(react.element) [3,7](@ref)
+                if (React.isValidElement(child)) {
+                    // 核心：递归提取这个元素的子内容（即其 props.children）
+                    // 在你的例子中，每个 span 元素的 props.children 包含了文本和更深层的节点
+                    return extractTextFromChildren(child.props.children);
+                }
+                // 情况3: 对于其他类型（如 null, undefined, boolean），返回空字符串避免干扰
+                return '';
+            }).join(''); // 将数组中的所有片段拼接成一个完整的字符串
+        };
+        // console.log(extractTextFromChildren(children));
+        try {
+            let codeText = String(children).replace(/\n$/, '');
+
+            // Try clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(codeText);
+                console.log('复制成功', codeText);
+            } else {
+                // Fallback for insecure contexts
+                codeText = extractTextFromChildren(children);
+                const textArea = document.createElement('textarea');
+                textArea.value = codeText;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                console.log('复制成功', codeText);
+            }
+
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            console.error('复制失败: ', err);
+            message.error('复制失败，请手动复制');
+        }
+    };
+
+    return (
+        <div style={{ position: 'relative', margin: '16px 0' }}>
+            <button
+                onClick={handleCopy}
+                style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    background: isCopied ? '#52c41a' : '#555',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '3px',
+                    padding: '4px 12px',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    zIndex: 1,
+                    transition: 'background 0.3s'
+                }}
+            >
+                {isCopied ? '已复制!' : '复制代码'}
+            </button>
+
+            <pre style={{
+                borderRadius: '4px',
+                overflowX: 'auto',
+                color: '#e6e6e6',
+                padding: '16px',
+                margin: 0,
+                background: '#2d2d2d'
+            }}>
+                <code className={className} {...props}>{children}</code>
+            </pre>
+        </div>
+    );
+};
 
 interface WriteArticleProps {
     articleId?: string;
@@ -112,20 +217,31 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                             <Card className="preview-card">
                                 <div className="preview-content">
                                     <ReactMarkdown
-                                        remarkPlugins={[remarkGfm]}
+                                        remarkPlugins={[remarkGfm, remarkEmoji, remarkMath]}
+                                        rehypePlugins={[rehypeRaw, rehypeKatex, rehypePrism]}
                                         children={content}
                                         components={{
                                             h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px' }} />,
                                             h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
                                             h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
                                             p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
-                                            code: ({ node, inline, ...props }) => inline ? (
-                                                <code {...props} style={{ backgroundColor: '#f0f0f0', padding: '2px 4px', borderRadius: '3px', fontFamily: 'monospace' }} />
-                                            ) : (
-                                                <pre style={{ backgroundColor: '#f0f0f0', padding: '16px', borderRadius: '4px', overflowX: 'auto', marginBottom: '16px' }}>
-                                                    <code {...props} style={{ backgroundColor: 'transparent', padding: 0 }} />
-                                                </pre>
-                                            ),
+                                            code: ({ node, inline, className, children, ...props }) => {
+                                                if (inline) {
+                                                    return (
+                                                        <code
+                                                            {...props}
+                                                            style={{
+                                                                backgroundColor: '#fafafa',
+                                                                padding: '2px 4px',
+                                                                borderRadius: '3px',
+                                                                fontFamily: 'monospace'
+                                                            }}
+                                                        >{children}</code>
+                                                    );
+                                                }
+
+                                                return <CodeBlock className={className} children={children} {...props} />;
+                                            },
                                             ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
                                             ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
                                             li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
@@ -134,7 +250,8 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                             a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
                                             table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
                                             th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
-                                            td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />
+                                            td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
+                                            mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px' }} />
                                         }}
                                     />
                                 </div>
