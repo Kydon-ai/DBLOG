@@ -423,7 +423,7 @@ export default function ReadArticle() {
         </div>
 
         {/* 文章内容 */}
-        <div style={{
+        <div className='preview-content' style={{
           fontSize: '16px',
           lineHeight: '1.8',
           color: '#262626',
@@ -441,6 +441,7 @@ export default function ReadArticle() {
               h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
               h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
               p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
+              // @ts-ignore
               code: ({ node, inline, className, children, ...props }) => {
                 if (inline) {
                   return (

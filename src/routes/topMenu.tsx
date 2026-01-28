@@ -1,5 +1,5 @@
 // TopMenu.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Dropdown, Menu, Row, Avatar, Space, MenuProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '../utils/windowContext/win';

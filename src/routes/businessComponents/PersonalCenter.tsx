@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Tabs, Card, List, Avatar, Button, Typography, Space, Spin, message, Modal, Input, Upload, Form } from 'antd';
+import { Tabs, Card, List, Avatar, Button, Typography, Space, Spin, message, Modal, Input, Form } from 'antd';
 import { HeartOutlined, CommentOutlined, StarOutlined, UserOutlined, UploadOutlined, EditOutlined } from '@ant-design/icons';
 import { useAppStore } from '../../store/useAppStore';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,7 @@ interface BlogItem {
 }
 
 const PersonalCenter: React.FC = () => {
-  const { isLogin, userInfo, logout } = useAppStore();
+  const { isLogin, userInfo } = useAppStore();
   const navigate = useNavigate();
 
   // 状态管理
@@ -61,14 +61,12 @@ const PersonalCenter: React.FC = () => {
       formData.append('file', file);
 
       const response = await request.post('/api/users/avatar', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        'Content-Type': 'multipart/form-data',
       });
 
       if (response.status === 'success') {
         // 获取完整的头像URL
-        const baseUrl = 'http://localhost:8001';
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const fullAvatarUrl = response.avatar_url.startsWith('http')
           ? response.avatar_url
           : baseUrl + response.avatar_url;
@@ -118,7 +116,7 @@ const PersonalCenter: React.FC = () => {
 
       if (response.status === 'success') {
         // 获取完整的头像URL
-        const baseUrl = 'http://localhost:8001';
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
         let updatedUser = response.user;
 
         if (updatedUser.avatar_url) {
@@ -161,7 +159,7 @@ const PersonalCenter: React.FC = () => {
       const response = await request.get('/api/auth/me');
 
       // 获取完整的头像URL
-      const baseUrl = 'http://localhost:8001';
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
       if (response.avatar_url) {
         const fullAvatarUrl = response.avatar_url.startsWith('http')
           ? response.avatar_url

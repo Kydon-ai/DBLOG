@@ -1,21 +1,27 @@
 import { useState, FC, useEffect, Children } from 'react';
-import { Button, Input, Form, Switch, Card, Space, message, Tag, Select } from 'antd';
-import { ConsoleSqlOutlined, SaveOutlined, SendOutlined } from '@ant-design/icons';
+import { Button, Input, Form, Switch, Card, Space, message, Select } from 'antd';
+import { SaveOutlined, SendOutlined } from '@ant-design/icons';
 import './WriteArticle.css';
 import request from '../../utils/https/request';
 import ReactMarkdown from 'react-markdown';
+// 支持GFM语法
 import remarkGfm from 'remark-gfm';
+// HTML渲染
 import rehypeRaw from 'rehype-raw';
+// emoji渲染
 import remarkEmoji from 'remark-emoji';
+// math渲染
 import remarkMath from 'remark-math';
+// katex渲染
 import rehypeKatex from 'rehype-katex';
+// 代码渲染对应高亮样式
 import rehypePrism from 'rehype-prism-plus';
-import 'katex/dist/katex.min.css';
+// import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism-tomorrow.css';
 import React from 'react';
 
 const { TextArea } = Input;
-const { Option } = Select;
+// const { Option } = Select;
 
 // CodeBlock component for handling code blocks with copy functionality
 export const CodeBlock: React.FC<{
@@ -46,17 +52,17 @@ export const CodeBlock: React.FC<{
                 return '';
             }).join(''); // 将数组中的所有片段拼接成一个完整的字符串
         };
-        // console.log(extractTextFromChildren(children));
+        console.log(extractTextFromChildren(children));
         try {
-            let codeText = String(children).replace(/\n$/, '');
-
+            // let codeText = String(children).replace(/\n$/, '');
+            let codeText = extractTextFromChildren(children);
             // Try clipboard API first
             if (navigator.clipboard && window.isSecureContext) {
                 await navigator.clipboard.writeText(codeText);
                 console.log('复制成功', codeText);
             } else {
                 // Fallback for insecure contexts
-                codeText = extractTextFromChildren(children);
+
                 const textArea = document.createElement('textarea');
                 textArea.value = codeText;
                 textArea.style.position = 'fixed';
@@ -225,6 +231,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                             h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
                                             h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
                                             p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
+                                            // @ts-ignore
                                             code: ({ node, inline, className, children, ...props }) => {
                                                 if (inline) {
                                                     return (

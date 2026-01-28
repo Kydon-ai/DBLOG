@@ -2,7 +2,7 @@
 import LoginImg from "/img/Pikachu.png";
 import { Card, Tabs, Input, Button, message } from "antd";
 import type { TabsProps } from "antd";
-import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../store/useAppStore";

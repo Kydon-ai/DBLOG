@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "nots-build": "vite build",
+    "build-test": "tsc -b && vite build --mode test",
+    "build-prod": "tsc -b && vite build --mode production",
+    "nots-build": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src/"
@@ -23,11 +25,15 @@
     "react-redux": "^9.1.2",
     "react-router-dom": "^6.26.1",
     "redux-persist": "^6.0.0",
+    "rehype-katex": "^7.0.1",
     "rehype-prism-plus": "^2.0.0",
+    "rehype-raw": "^7.0.0",
     "remark-directive": "^4.0.0",
+    "remark-emoji": "^5.0.2",
     "remark-gfm": "^4.0.1",
     "remark-highlight.js": "^8.0.0",
     "remark-mark": "^0.0.0",
+    "remark-math": "^6.0.0",
     "zustand": "^5.0.10"
   },
   "devDependencies": {

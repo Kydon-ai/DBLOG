@@ -164,7 +164,7 @@ class Request {
 
 // 导出一个单例
 // 使用后端服务器地址作为baseURL
-const request = new Request('http://localhost:8001'); // 使用后端服务器地址作为baseURL
+const request = new Request(import.meta.env.VITE_API_BASE_URL); // 使用后端服务器地址作为baseURL
 // 如果需要直接请求外部API，可以使用环境变量
 // const request = new Request(import.meta.env.VITE_API_BASE_URL);
 

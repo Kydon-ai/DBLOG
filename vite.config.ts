@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0', // 监听所有网络接口
-    // port: 5173,      // 指定端口号（可选）
+    port: 8188,      // 指定端口号（可选）
     // 配置代理解决CORS问题
     proxy: {
       '/api': {
