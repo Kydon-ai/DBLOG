@@ -29,7 +29,7 @@ import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 // 创建布局组件以使用useLocation钩子
 const AppLayout = () => {
 	const location = useLocation();
-	const specialWidthRouter: string[] = ["/home", "/"];
+	const specialWidthRouter: string[] = ["/", "/home", "/write-article"];
 	const specialLayoutRouter: string[] = [];
 	return (
 		<WindowSizeProvider>

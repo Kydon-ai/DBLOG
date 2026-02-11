@@ -128,6 +128,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('');
+    const [showSettings, setShowSettings] = useState(true);
 
     // 处理内容变化，保持content与表单同步
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -219,7 +220,29 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
 
                         {/* 第二栏：实时预览界面 */}
                         <div className="column preview-column">
-                            <h3 className="column-title">实时预览</h3>
+                            <div style={{ position: 'relative' }}>
+                                <h3 className="column-title">实时预览</h3>
+                                {/* 显示设置按钮 */}
+                                {!showSettings && (
+                                    <button
+                                        onClick={() => setShowSettings(true)}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            background: '#f0f0f0',
+                                            border: '1px solid #ddd',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            fontSize: '12px',
+                                            padding: '4px 8px',
+                                            color: '#666'
+                                        }}
+                                    >
+                                        展开面板
+                                    </button>
+                                )}
+                            </div>
                             <Card className="preview-card">
                                 <div className="preview-content">
                                     <ReactMarkdown
@@ -266,9 +289,40 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                         </div>
 
                         {/* 第三栏：文章设置参数 */}
-                        <div className="column settings-column">
-                            <h3 className="column-title">文章设置</h3>
-                            <div style={{ height: '100%', overflowY: 'auto' }}>
+                        <div
+                            className="column settings-column"
+                            style={{
+                                flex: showSettings ? 0.8 : 0,
+                                minWidth: showSettings ? '320px' : 0,
+                                overflow: 'hidden',
+                                transition: 'flex 0.3s ease, min-width 0.3s ease'
+                            }}
+                        >
+                            <div style={{ position: 'relative' }}>
+                                {showSettings && (
+                                    <h3 className="column-title">文章设置</h3>
+                                )}
+                                {/* 关闭按钮 */}
+                                {showSettings && (
+                                    <button
+                                        onClick={() => setShowSettings(false)}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            fontSize: '16px',
+                                            color: '#999',
+                                            padding: '4px'
+                                        }}
+                                    >
+                                        关闭面板
+                                    </button>
+                                )}
+                            </div>
+                            <div style={{ height: '100%', overflowY: 'hidden' }}>
                                 <Form.Item
                                     name="title"
                                     label="标题"

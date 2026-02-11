@@ -53,7 +53,7 @@ const FooterCopyright = () => {
 
   // 解构格式化后的时间数据
   const { years, months, days, hours, minutes, seconds, ms } = formatTime(timeDiff);
-  console.log(String(days))
+  // console.log(String(days))
   // 动态构建显示字符串
   const timeComponents = [
     years > 0 ? `${String(years).padStart(2, "0")}年` : '',
