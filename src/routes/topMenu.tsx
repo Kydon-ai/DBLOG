@@ -23,11 +23,6 @@ const TopMenu: React.FC = () => {
                     key: 'home',
                     label: '主页',
                 },
-                // {
-                //     key: 'write-article',
-                //     label: '写文章',
-                //     disabled: !permissions.can_write,
-                // },
                 {
                     key: 'about-project',
                     label: '关于项目',
@@ -91,12 +86,14 @@ const TopMenu: React.FC = () => {
         }
     };
     const menus = (
-        <Menu
-            selectedKeys={[current]}
-            mode="vertical"
-            onClick={onClick}
-            items={items}
-        />
+        <div style={{ flex: 1 }}>
+            <Menu
+                selectedKeys={[current]}
+                mode="vertical"
+                onClick={onClick}
+                items={items}
+            />
+        </div>
     );
     const userItems: MenuProps['items'] = [
         {
