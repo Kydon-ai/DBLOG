@@ -31,46 +31,29 @@ const FooterCopyright = () => {
   const formatTime = (diff: number) => {
     if (diff === 0) return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, ms: 0 };
 
-    // 创建日期对象用于精确计算
-    const endDate = new Date(targetDate.getTime() + diff);
-    const startDate = new Date(targetDate);
+    const TIME_MS = 1
+    const TIME_S = 1000 * TIME_MS
+    const TIME_M = 60 * TIME_S
+    const TIME_H = 60 * TIME_M
+    const TIME_D = 24 * TIME_H
+    const TIME_W = 7 * TIME_D
+    const TIME_MONTH = 30 * TIME_D
+    const TIME_Y = 12 * TIME_MONTH
 
-    // 计算完整年数
-    let years = endDate.getFullYear() - startDate.getFullYear();
-    endDate.setFullYear(startDate.getFullYear());
-
-    // 计算剩余月份
-    let months = endDate.getMonth() - startDate.getMonth();
-    endDate.setDate(startDate.getDate());
-
-    // 计算剩余天数
-    let days = endDate.getDate() - startDate.getDate();
-
-    // 处理负天数情况
-    if (days < 0) {
-      const lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
-      days += lastDayOfMonth;
-      months -= 1;
-    }
-
-    // 处理负月份情况
-    if (months < 0) {
-      years -= 1;
-      months += 12;
-    }
-
-    // 分解剩余时间
-    const ms = diff % 1000;
-    const seconds = Math.floor(diff / 1000) % 60;
-    const minutes = Math.floor(diff / (60 * 1000)) % 60;
-    const hours = Math.floor(diff / (60 * 60 * 1000)) % 24;
+    const years = Math.floor(diff / TIME_Y); diff -= years * TIME_Y;
+    const months = Math.floor(diff / TIME_MONTH); diff -= months * TIME_MONTH;
+    const days = Math.floor(diff / TIME_D); diff -= days * TIME_D;
+    const hours = Math.floor(diff / TIME_H); diff -= hours * TIME_H;
+    const minutes = Math.floor(diff / TIME_M); diff -= minutes * TIME_M;
+    const seconds = Math.floor(diff / TIME_S); diff -= seconds * TIME_S;
+    const ms = diff;
 
     return { years, months, days, hours, minutes, seconds, ms };
   };
 
   // 解构格式化后的时间数据
   const { years, months, days, hours, minutes, seconds, ms } = formatTime(timeDiff);
-
+  console.log(String(days))
   // 动态构建显示字符串
   const timeComponents = [
     years > 0 ? `${String(years).padStart(2, "0")}年` : '',
