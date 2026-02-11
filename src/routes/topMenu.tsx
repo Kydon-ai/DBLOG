@@ -125,12 +125,15 @@ const TopMenu: React.FC = () => {
                 </div>
                 {isHorizontal ? (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Menu
-                            onClick={onClick}
-                            selectedKeys={[current]}
-                            mode="horizontal"
-                            items={items}
-                        />
+                        {/* solution url:https://www.cnblogs.com/luyifo/articles/18064051 */}
+                        <div style={{ flex: 1 }}>
+                            <Menu
+                                onClick={onClick}
+                                selectedKeys={[current]}
+                                mode="horizontal"
+                                items={items}
+                            />
+                        </div>
                         {isLogin ? (
                             <>
                                 <Space>
