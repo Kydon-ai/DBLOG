@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import request from '../utils/https/request';
+import { List, Typography } from 'antd';
 
 // 文章数据类型定义
 interface Article {
@@ -88,8 +89,21 @@ const Home = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sys_knowledge, setSysKnowledge] = useState<any[]>([]);
-  const [sys_announcement, setSysAnnouncement] = useState<any[]>([]);
+  const [sys_knowledge, setSysKnowledge] = useState<any[]>([
+    '体系知识1',
+    '体系知识2',
+    '体系知识3',
+    '体系知识4',
+    '体系知识5',
+  ]);
+  const [sys_announcement, setSysAnnouncement] = useState<any[]>([
+    '网页公告1',
+    '网页公告2',
+    '网页公告3',
+    '网页公告4',
+    '网页公告5',
+  ]);
+
   // 组件挂载时获取文章列表
   useEffect(() => {
     const fetchArticles = async () => {
@@ -141,30 +155,19 @@ const Home = () => {
 
   return (
     <div style={{ display: "flex" }}>
-      <div style={{ flex: "0 0 auto", padding: '20px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#333' }}>体系知识</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {sys_knowledge.length > 0 ? sys_knowledge.map(item => (
-            <div key={item?.id || ''} style={{ padding: '12px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
-              {item?.title || ''}
-            </div>
-          )) : <div style={{
-            border: '1px solid #eee',
-            borderRadius: '8px',
-            padding: '20px',
-            backgroundColor: 'white',
-            textAlign: 'center',
-            color: '#999',
-            fontSize: '14px'
-          }}>
-            暂无内容，敬请期待
-          </div>}
-
-        </div>
+      <div style={{ flex: "0 0 auto", padding: '20px 0 0 20px', minWidth: '10vw' }}>
+        <List
+          style={{ backgroundColor: '#f5f5f5' }}
+          header={<div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>体系知识</div>}
+          footer={<div></div>}
+          bordered
+          dataSource={sys_knowledge}
+          renderItem={(item) => <List.Item>{item}</List.Item>}
+        />
       </div>
       <div style={{
         padding: '20px',
-        maxWidth: '1200px',
+        // maxWidth: '1200px',
         margin: '0 auto',
         flex: "1"
       }}>
@@ -191,28 +194,18 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div style={{ flex: "0 0 auto", padding: '20px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#333' }}>网页公告</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {sys_announcement.length > 0 ? sys_announcement.map(item => (
-            <div key={item?.id || ''} style={{ padding: '12px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
-              {item?.title || ''}
-            </div>
-          )) : <div style={{
-            border: '1px solid #eee',
-            borderRadius: '8px',
-            padding: '20px',
-            backgroundColor: 'white',
-            textAlign: 'center',
-            color: '#999',
-            fontSize: '14px'
-          }}>
-            暂无内容，敬请期待
-          </div>
-          }
-        </div>
+      <div style={{ flex: "0 0 auto", padding: '20px 20px 0 0', minWidth: '10vw' }}>
+
+        <List
+          style={{ backgroundColor: '#f5f5f5' }}
+          header={<div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>网页公告</div>}
+          footer={<div></div>}
+          bordered
+          dataSource={sys_announcement}
+          renderItem={(item) => <List.Item>{item}</List.Item>}
+        />
       </div>
-    </div>
+    </div >
 
   );
 };

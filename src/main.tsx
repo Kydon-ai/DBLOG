@@ -29,11 +29,12 @@ import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 // 创建布局组件以使用useLocation钩子
 const AppLayout = () => {
 	const location = useLocation();
-	const specialRouter: string[] = [];
+	const specialWidthRouter: string[] = ["/home", "/"];
+	const specialLayoutRouter: string[] = [];
 	return (
 		<WindowSizeProvider>
 			<div className="layout">
-				{!specialRouter.includes(location.pathname) && (
+				{!specialLayoutRouter.includes(location.pathname) && (
 					<header className="header" style={{}}>
 						<TopMenu></TopMenu>
 					</header>
@@ -43,7 +44,7 @@ const AppLayout = () => {
 						{/* 对chat路由应用100%宽度，其他路由保持80vw最大宽度 */}
 						<div
 							style={{
-								maxWidth: specialRouter.includes(location.pathname)
+								maxWidth: specialWidthRouter.includes(location.pathname)
 									? '100vw'
 									: '80vw',
 								margin: 'auto',
@@ -106,8 +107,7 @@ const AppLayout = () => {
 						<FloatButton.BackTop />
 					</div>
 				</main>
-				{/* 当路由不是/chat时渲染页脚 */}
-				{!specialRouter.includes(location.pathname) && (
+				{!specialLayoutRouter.includes(location.pathname) && (
 					<footer className="footer" style={{ minHeight: '10vh' }}>
 						<FooterCopyright></FooterCopyright>
 					</footer>
