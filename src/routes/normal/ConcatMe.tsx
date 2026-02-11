@@ -1,29 +1,30 @@
-import { Card ,Tabs,Image, TabsProps,Alert} from "antd"
+import { Card, Tabs, Image, TabsProps, Alert } from "antd"
 export default function DefaultTemplate() {
     const items: TabsProps['items'] = [
         {
-          key: '1',
-          label: '微信',
-          children: <div style={{ display:'flex',justifyContent: 'center'}}>
-            <Image width={200} src="http://www.qidong.tech:5173/resource/wx_lqd.jpg"></Image>
-          </div>,
+            key: '1',
+            label: '微信',
+            children: <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Image width={200} src="https://www.qidong.tech:5173/resource/wx_lqd.jpg"></Image>
+            </div>,
         },
         {
-          key: '2',
-          label: 'QQ',
-          children:  <div style={{ display:'flex',justifyContent: 'center'}}>
-                    <Image width={200} src="http://www.qidong.tech:5173/resource/qq_lqd.jpg"></Image>
-                </div>,
+            key: '2',
+            label: 'QQ',
+            children: <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Image width={200} src="https://www.qidong.tech:5173/resource/qq_lqd.jpg"></Image>
+            </div>,
         },
-      ];
+    ];
     return (<>
-        <div style={{ maxWidth:'800px',margin: '0 auto', padding: '20px' ,borderRadius: "10px"}}>
-            <div className="top-img" style={{ height: '200px',backgroundImage:'url(http://www.qidong.tech:5173/resource/summer.png)',backgroundPosition:'center',backgroundRepeat:'no-repeat',
-                borderTopLeftRadius:'inherit',
-                borderTopRightRadius:'inherit',
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', borderRadius: "10px" }}>
+            <div className="top-img" style={{
+                height: '200px', backgroundImage: 'url(https://oss.qidong.tech/prod/2026/02/11/20260211133249218_68c32c85f5acd348bc022357ea5321c9.png)', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
+                borderTopLeftRadius: 'inherit',
+                borderTopRightRadius: 'inherit',
             }}></div>
             <div className="main-content">
-                <Card hoverable style={{ borderRadius: 'initial'}}>
+                <Card hoverable style={{ borderRadius: 'initial' }}>
                     <h1>基本情况</h1>
                     <p>
                         <strong>曾用网名: &nbsp;&nbsp;</strong>
@@ -49,7 +50,7 @@ export default function DefaultTemplate() {
                         <span>独立思考;参阅古文;经济金融;网页开发;</span>
                     </p>
                 </Card>
-                <Card hoverable style={{ borderRadius:'initial'}}>
+                <Card hoverable style={{ borderRadius: 'initial' }}>
                     <h1>个人经历</h1>
                     <p>
                         <strong>开发经验: &nbsp;&nbsp;</strong>
@@ -73,12 +74,13 @@ export default function DefaultTemplate() {
                     </p>
                 </Card>
                 <Card hoverable style={{
-                    borderTopLeftRadius:'initial',
-                    borderTopRightRadius:'initial',}}>
+                    borderTopLeftRadius: 'initial',
+                    borderTopRightRadius: 'initial',
+                }}>
                     <h1>加我好友</h1>
                     <Tabs defaultActiveKey="1" centered items={items}> </Tabs>
                 </Card>
-                <Alert  message="嗯哼？你又来视奸我啦(￣ω￣;)" type="info" ></Alert>
+                <Alert message="嗯哼？你又来视奸我啦(￣ω￣;)" type="info" ></Alert>
             </div>
         </div>
     </>)
