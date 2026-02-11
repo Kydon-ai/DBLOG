@@ -88,7 +88,8 @@ const Home = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [sys_knowledge, setSysKnowledge] = useState<any[]>([]);
+  const [sys_announcement, setSysAnnouncement] = useState<any[]>([]);
   // 组件挂载时获取文章列表
   useEffect(() => {
     const fetchArticles = async () => {
@@ -139,45 +140,80 @@ const Home = () => {
   }
 
   return (
-    <div style={{
-      padding: '20px',
-      maxWidth: '1200px',
-      margin: '0 auto'
-    }}>
-      {/* 页面标题 */}
-      <h1 style={{
-        fontSize: '32px',
-        fontWeight: '700',
-        marginBottom: '30px',
-        textAlign: 'center',
-        color: '#262626'
-      }}>
-        文章列表
-      </h1>
+    <div style={{ display: "flex" }}>
+      <div style={{ flex: "0 0 auto", padding: '20px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#333' }}>体系知识</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {sys_knowledge.length > 0 ? sys_knowledge.map(item => (
+            <div key={item?.id || ''} style={{ padding: '12px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
+              {item?.title || ''}
+            </div>
+          )) : <div style={{
+            border: '1px solid #eee',
+            borderRadius: '8px',
+            padding: '20px',
+            backgroundColor: 'white',
+            textAlign: 'center',
+            color: '#999',
+            fontSize: '14px'
+          }}>
+            暂无内容，敬请期待
+          </div>}
 
-      {/* 文章卡片网格 */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-        gap: '24px'
-      }}>
-        {articles.map(article => (
-          <ArticleCard key={article.id} article={article} />
-        ))}
-      </div>
-
-      {/* 空状态 */}
-      {articles.length === 0 && (
-        <div style={{
-          textAlign: 'center',
-          padding: '60px 20px',
-          color: '#999',
-          fontSize: '16px'
-        }}>
-          暂无文章，敬请期待
         </div>
-      )}
+      </div>
+      <div style={{
+        padding: '20px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        flex: "1"
+      }}>
+        {/* 文章卡片网格 */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+          gap: '24px'
+        }}>
+          {articles.map(article => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+
+        {/* 空状态 */}
+        {articles.length === 0 && (
+          <div style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            color: '#999',
+            fontSize: '16px'
+          }}>
+            暂无文章，敬请期待
+          </div>
+        )}
+      </div>
+      <div style={{ flex: "0 0 auto", padding: '20px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#333' }}>网页公告</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {sys_announcement.length > 0 ? sys_announcement.map(item => (
+            <div key={item?.id || ''} style={{ padding: '12px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
+              {item?.title || ''}
+            </div>
+          )) : <div style={{
+            border: '1px solid #eee',
+            borderRadius: '8px',
+            padding: '20px',
+            backgroundColor: 'white',
+            textAlign: 'center',
+            color: '#999',
+            fontSize: '14px'
+          }}>
+            暂无内容，敬请期待
+          </div>
+          }
+        </div>
+      </div>
     </div>
+
   );
 };
 
