@@ -19,7 +19,7 @@ import rehypePrism from 'rehype-prism-plus';
 // import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism-tomorrow.css';
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const { TextArea } = Input;
 // const { Option } = Select;
 
@@ -129,7 +129,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('');
     const [showSettings, setShowSettings] = useState(true);
-
+    const navigate = useNavigate();
     // 处理内容变化，保持content与表单同步
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = e.target.value;
@@ -178,6 +178,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
             if (publish && response.id) {
                 // 实际项目中可以使用useNavigate跳转
                 console.log('Article published successfully:', response);
+                navigate(`/articles/${response.id}`);
             }
         } catch (error) {
             message.error(publish ? '文章发布失败' : '文章保存失败');
@@ -219,7 +220,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                         </div>
 
                         {/* 第二栏：实时预览界面 */}
-                        <div className="column preview-column">
+                        <div className="column preview-column" style={{ maxWidth: '100%', flexShrink: 1 }}>
                             <div style={{ position: 'relative' }}>
                                 <h3 className="column-title">实时预览</h3>
                                 {/* 显示设置按钮 */}
@@ -243,17 +244,17 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                     </button>
                                 )}
                             </div>
-                            <Card className="preview-card">
-                                <div className="preview-content">
+                            <Card className="preview-card" style={{ maxWidth: '100%' }}>
+                                <div className="preview-content" style={{ maxWidth: '100%' }}>
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm, remarkEmoji, remarkMath]}
                                         rehypePlugins={[rehypeRaw, rehypeKatex, rehypePrism]}
                                         children={content}
                                         components={{
-                                            h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px' }} />,
-                                            h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
-                                            h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
-                                            p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
+                                            h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px', maxWidth: '100%' }} />,
+                                            h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px', maxWidth: '100%' }} />,
+                                            h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px', maxWidth: '100%' }} />,
+                                            p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px', maxWidth: '100%' }} />,
                                             // @ts-ignore
                                             code: ({ node, inline, className, children, ...props }) => {
                                                 if (inline) {
@@ -264,7 +265,8 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                                                 backgroundColor: '#fafafa',
                                                                 padding: '2px 4px',
                                                                 borderRadius: '3px',
-                                                                fontFamily: 'monospace'
+                                                                fontFamily: 'monospace',
+                                                                maxWidth: '100%'
                                                             }}
                                                         >{children}</code>
                                                     );
@@ -272,16 +274,16 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
 
                                                 return <CodeBlock className={className} children={children} {...props} />;
                                             },
-                                            ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
-                                            ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
-                                            li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
-                                            blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px' }} />,
+                                            ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px', maxWidth: '100%' }} />,
+                                            ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px', maxWidth: '100%' }} />,
+                                            li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px', maxWidth: '100%' }} />,
+                                            blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px', maxWidth: '100%' }} />,
                                             img: ({ node, ...props }) => <img {...props} style={{ maxWidth: '100%', height: 'auto', marginBottom: '16px' }} />,
-                                            a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
-                                            table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
-                                            th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
-                                            td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
-                                            mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px' }} />
+                                            a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline', maxWidth: '100%' }} />,
+                                            table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px', maxWidth: '100%' }} />,
+                                            th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa', maxWidth: '100%' }} />,
+                                            td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', maxWidth: '100%' }} />,
+                                            mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px', maxWidth: '100%' }} />
                                         }}
                                     />
                                 </div>
