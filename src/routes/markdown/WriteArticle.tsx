@@ -153,9 +153,28 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
     ];
 
     // 标签预设选项
-    const tagOptions = [
+    const [tagOptions, setTagOptions] = useState([
         '技术', '前端', '后端', 'React', 'Vue', 'JavaScript', 'Python', '数据库', '算法', '设计'
-    ];
+    ]);
+
+    // 组件挂载时获取标签列表
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const response = await request.get('/api/tags');
+                if (response && Array.isArray(response)) {
+                    const tagNames = response.map(tag => tag.name);
+                    // 如果有新标签，合并到现有选项中
+                    const updatedTags = [...new Set([...tagOptions, ...tagNames])];
+                    setTagOptions(updatedTags);
+                }
+            } catch (error) {
+                console.error('获取标签列表失败:', error);
+            }
+        };
+
+        fetchTags();
+    }, []);
 
     // 保存文章（草稿或发布）
     const handleSave = async (publish: boolean) => {
