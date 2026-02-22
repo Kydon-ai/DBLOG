@@ -1,5 +1,5 @@
 import { useState, useEffect, FC } from 'react';
-import { Card, Typography, Space, Divider, Statistic, Avatar, Button } from 'antd';
+import { Card, Typography, Space, Divider, Avatar, Button } from 'antd';
 import { EyeOutlined, ClockCircleOutlined, UserOutlined } from '@ant-design/icons';
 // import './article.css';
 import request from '../../utils/https/request';
@@ -17,16 +17,16 @@ import rehypeKatex from 'rehype-katex';
 // 代码渲染对应高亮样式
 import rehypePrism from 'rehype-prism-plus';
 import 'prismjs/themes/prism-tomorrow.css';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppStore } from '../../store/useAppStore';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text } = Typography;
 
 const AnnouncementDetail: FC = () => {
     const { id } = useParams<{ id: string }>();
     const [announcement, setAnnouncement] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     useEffect(() => {
         if (id) {

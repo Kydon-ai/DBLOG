@@ -197,8 +197,11 @@ const Home = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // @ts-ignore
   const [announcementLoading, setAnnouncementLoading] = useState(true);
+  // @ts-ignore
   const [announcementError, setAnnouncementError] = useState<string | null>(null);
+  // @ts-ignore
   const [sys_knowledge, setSysKnowledge] = useState<string[]>([
     '体系知识1',
     '体系知识2',

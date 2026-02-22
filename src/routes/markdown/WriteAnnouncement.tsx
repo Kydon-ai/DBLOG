@@ -3,19 +3,6 @@ import { Button, Input, Form, Card, Space, message } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import './WriteArticle.css';
 import request from '../../utils/https/request';
-import ReactMarkdown from 'react-markdown';
-// 支持GFM语法
-import remarkGfm from 'remark-gfm';
-// HTML渲染
-import rehypeRaw from 'rehype-raw';
-// emoji渲染
-import remarkEmoji from 'remark-emoji';
-// math渲染
-import remarkMath from 'remark-math';
-// katex渲染
-import rehypeKatex from 'rehype-katex';
-// 代码渲染对应高亮样式
-import rehypePrism from 'rehype-prism-plus';
 import 'prismjs/themes/prism-tomorrow.css';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
