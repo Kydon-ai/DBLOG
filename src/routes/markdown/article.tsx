@@ -400,7 +400,7 @@ export default function ReadArticle() {
 
       {/* 文章内容容器 */}
       <div style={{
-        maxWidth: 'calc(80vw - 327px)',
+        width: 'calc(80vw - 327px)',
         padding: '20px',
         backgroundColor: 'white',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
@@ -439,6 +439,30 @@ export default function ReadArticle() {
             <span style={{ margin: '0 10px' }}>|</span>
             <span>浏览量: {article.view_count}</span>
           </div>
+          {/* 编辑文章按钮 */}
+          {useAppStore.getState().userInfo?.username === article.author?.username && (
+            <button
+              onClick={() => window.location.href = `/edit-article/${article.id}`}
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#1890ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#40a9ff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#1890ff';
+              }}
+            >
+              编辑文章
+            </button>
+          )}
           {/* {article.tags && (
             <div style={{ display: 'flex', gap: '8px' }}>
               {article.tags.split(',').map((tag, index) => (
@@ -536,7 +560,9 @@ export default function ReadArticle() {
                 img: ({ node, ...props }) => {
                   const { title } = props;
                   return (<div style={{
-                    margin: '20px 0'
+                    margin: '20px 0',
+                    display: 'flex',
+                    justifyContent: 'center',
                   }}>
                     <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
                     {title && (

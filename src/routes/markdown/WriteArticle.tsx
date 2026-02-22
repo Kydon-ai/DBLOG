@@ -19,7 +19,7 @@ import rehypePrism from 'rehype-prism-plus';
 // import 'katex/dist/katex.min.css';
 import 'prismjs/themes/prism-tomorrow.css';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 const { TextArea } = Input;
 // const { Option } = Select;
 
@@ -120,22 +120,49 @@ export const CodeBlock: React.FC<{
     );
 };
 
-interface WriteArticleProps {
-    articleId?: string;
-}
-
-const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
+const WriteArticle: FC = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('');
     const [showSettings, setShowSettings] = useState(true);
     const navigate = useNavigate();
+    const { id: articleId } = useParams<{ id: string }>();
+
     // 处理内容变化，保持content与表单同步
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = e.target.value;
         setContent(newContent);
         form.setFieldValue('content', newContent);
     };
+
+    // 加载文章内容进行编辑
+    useEffect(() => {
+        if (articleId) {
+            const fetchArticle = async () => {
+                try {
+                    setLoading(true);
+                    const response = await request.get(`/api/articles/${articleId}`);
+                    if (response) {
+                        // 处理标签，将逗号分隔的字符串转换为数组
+                        const tags = response.tags ? response.tags.split(',').map((tag: string) => tag.trim()) : [];
+                        form.setFieldsValue({
+                            title: response.title,
+                            content: response.content,
+                            tags: tags,
+                            summary: response.summary
+                        });
+                        setContent(response.content);
+                    }
+                } catch (error) {
+                    message.error('加载文章失败');
+                    console.error('Fetch article error:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchArticle();
+        }
+    }, [articleId, form]);
 
     // 初始化内容
     useEffect(() => {
@@ -182,14 +209,26 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
             setLoading(true);
             const values = await form.validateFields();
 
-            const articleData = {
+            // 处理标签，将数组转换为逗号分隔的字符串
+            const processedValues = {
                 ...values,
-                is_published: publish,
-                ...(articleId && { id: articleId }),
+                tags: Array.isArray(values.tags) ? values.tags.join(',') : values.tags
             };
 
-            // 调用API保存文章
-            const response = await request.post('/api/articles', articleData);
+            const articleData = {
+                ...processedValues,
+                is_published: publish,
+            };
+
+            // 根据是否有articleId决定是创建还是更新文章
+            let response;
+            if (articleId) {
+                // 更新文章
+                response = await request.put(`/api/articles/${articleId}`, articleData);
+            } else {
+                // 创建文章
+                response = await request.post('/api/articles', articleData);
+            }
 
             message.success(publish ? '文章发布成功' : '文章保存成功');
 
@@ -228,10 +267,10 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                 rules={[{ required: true, message: '请输入文章内容' }]}
                             >
                                 <TextArea
-                                    rows={45}
+                                    autoSize={{ minRows: 100, maxRows: 9999 }}
                                     placeholder="请输入Markdown格式的文章内容..."
                                     className="markdown-editor"
-                                    style={{ fontFamily: 'monospace', width: '100%', resize: 'vertical' }}
+                                    style={{ fontFamily: 'monospace', width: '100%', resize: 'vertical', minHeight: '80vh' }}
                                     value={content}
                                     onChange={handleContentChange}
                                 />
@@ -265,15 +304,16 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                             </div>
                             <Card className="preview-card" style={{ maxWidth: '100%' }}>
                                 <div className="preview-content" style={{ maxWidth: '100%' }}>
+
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm, remarkEmoji, remarkMath]}
                                         rehypePlugins={[rehypeRaw, rehypeKatex, rehypePrism]}
                                         children={content}
                                         components={{
-                                            h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px', maxWidth: '100%' }} />,
-                                            h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px', maxWidth: '100%' }} />,
-                                            h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px', maxWidth: '100%' }} />,
-                                            p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px', maxWidth: '100%' }} />,
+                                            h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px' }} />,
+                                            h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
+                                            h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
+                                            p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
                                             // @ts-ignore
                                             code: ({ node, inline, className, children, ...props }) => {
                                                 if (inline) {
@@ -284,25 +324,94 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                                                 backgroundColor: '#fafafa',
                                                                 padding: '2px 4px',
                                                                 borderRadius: '3px',
-                                                                fontFamily: 'monospace',
-                                                                maxWidth: '100%'
+                                                                fontFamily: 'monospace'
                                                             }}
                                                         >{children}</code>
                                                     );
                                                 }
-
+                                                if (typeof children === 'string') {
+                                                    // 按照行内代码处理
+                                                    return (
+                                                        <code
+                                                            {...props}
+                                                            style={{
+                                                                backgroundColor: '#818b981f',
+                                                                padding: '2px 4px',
+                                                                borderRadius: '3px',
+                                                                fontFamily: 'monospace'
+                                                            }}
+                                                        >{children}</code>
+                                                    );
+                                                }
                                                 return <CodeBlock className={className} children={children} {...props} />;
                                             },
-                                            ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px', maxWidth: '100%' }} />,
-                                            ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px', maxWidth: '100%' }} />,
-                                            li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px', maxWidth: '100%' }} />,
-                                            blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px', maxWidth: '100%' }} />,
-                                            img: ({ node, ...props }) => <img {...props} style={{ maxWidth: '100%', height: 'auto', marginBottom: '16px' }} />,
-                                            a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline', maxWidth: '100%' }} />,
-                                            table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px', maxWidth: '100%' }} />,
-                                            th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa', maxWidth: '100%' }} />,
-                                            td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', maxWidth: '100%' }} />,
-                                            mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px', maxWidth: '100%' }} />
+                                            ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
+                                            ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
+                                            li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
+                                            blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px' }} />,
+                                            img: ({ node, ...props }) => {
+                                                const { title } = props;
+                                                return (<div style={{
+                                                    margin: '20px 0',
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                }}>
+                                                    <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
+                                                    {title && (
+                                                        <div style={{
+                                                            display: 'block',
+                                                            textAlign: 'center',
+                                                            fontSize: '14px',
+                                                            color: '#666',
+                                                            fontStyle: 'italic'
+                                                        }}>
+                                                            {title}
+                                                        </div>
+                                                    )}
+                                                </div>)
+                                            },
+                                            a: ({ node, ...props }) => {
+                                                const href = props.href;
+                                                if (!href) return <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />;
+
+                                                // 检查是否是本地链接或指定域名
+                                                const isLocal = href.startsWith('/');
+                                                // 安全验证：检查是否是 qidong.tech 顶级域名
+                                                const isQidongTech = (() => {
+                                                    try {
+                                                        // 如果是相对路径，直接返回 false
+                                                        if (href.startsWith('/') || href.startsWith('#')) {
+                                                            return false;
+                                                        }
+
+                                                        const url = new URL(href);
+                                                        const hostname = url.hostname;
+
+                                                        // 精确匹配顶级域名
+                                                        return hostname === 'qidong.tech' ||
+                                                            hostname.endsWith('.qidong.tech');
+                                                    } catch (error) {
+                                                        // URL解析失败（可能是mailto:、tel:等）
+                                                        return false;
+                                                    }
+                                                })();
+
+                                                if (isLocal || isQidongTech) {
+                                                    // 直接在新窗口打开
+                                                    return <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer" />;
+                                                } else {
+                                                    // 跳转到确认页面
+                                                    const handleClick = (e: React.MouseEvent) => {
+                                                        e.preventDefault();
+                                                        window.open(`/url-redirect?url=${encodeURIComponent(href)}`, '_blank');
+                                                    };
+                                                    return <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} onClick={handleClick} />;
+                                                }
+                                            },
+                                            table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
+                                            th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
+                                            td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
+                                            mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px' }} />
                                         }}
                                     />
                                 </div>
@@ -315,8 +424,12 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                             style={{
                                 flex: showSettings ? 0.8 : 0,
                                 minWidth: showSettings ? '320px' : 0,
-                                overflow: 'hidden',
-                                transition: 'flex 0.3s ease, min-width 0.3s ease'
+                                visibility: showSettings ? 'visible' : 'hidden',
+                                transition: 'flex 0.3s ease, min-width 0.3s ease',
+                                position: "sticky",
+                                top: 0,
+                                alignSelf: 'flex-start', // 添加这个
+                                height: '100vh', // 添加固定高度
                             }}
                         >
                             <div style={{ position: 'relative' }}>
@@ -343,7 +456,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                     </button>
                                 )}
                             </div>
-                            <div style={{ height: '100%', overflowY: 'hidden' }}>
+                            <div style={{ height: '100%' }}>
                                 <Form.Item
                                     name="title"
                                     label="标题"
@@ -427,7 +540,7 @@ const WriteArticle: FC<WriteArticleProps> = ({ articleId }) => {
                                             loading={loading}
                                             block
                                         >
-                                            发布文章
+                                            {articleId ? '发布编辑' : '发布文章'}
                                         </Button>
                                     </Space>
                                 </Form.Item>

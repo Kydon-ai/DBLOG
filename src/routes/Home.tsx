@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import request from '../utils/https/request';
-import { List } from 'antd';
-
+import { List, Typography, Tooltip } from 'antd';
+import { HeartOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
+const { Text } = Typography;
 // 文章数据类型定义
+interface AuthorInfo {
+  id: number;
+  username: string;
+  avatar_url?: string;
+}
+
 interface Article {
   id: number;
   title: string;
@@ -14,15 +21,17 @@ interface Article {
   view_count: number;
   like_count: number;
   comment_count: number;
+  collect_count: number;
   created_at: string;
   updated_at: string | null;
   published_at: string | null;
+  author?: AuthorInfo;
 }
 
 // 文章卡片组件
 const ArticleCard = ({ article }: { article: Article }) => {
   const navigate = useNavigate();
-  const { id, title } = article;
+  const { id, title, author, like_count, comment_count, collect_count } = article;
   const [isHovered, setIsHovered] = useState(false);
 
   // 处理卡片点击事件
@@ -32,7 +41,8 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
   // 使用默认图片URL
   const imageUrl = '/img/default_blog.svg';
-
+  // 使用默认头像
+  const defaultAvatar = '/img/user.png';
   return (
     <div
       onClick={handleCardClick}
@@ -47,6 +57,9 @@ const ArticleCard = ({ article }: { article: Article }) => {
         boxShadow: isHovered ? '0 4px 16px rgba(0, 0, 0, 0.12)' : '0 2px 8px rgba(0, 0, 0, 0.08)',
         transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
         transition: 'transform 0.3s, box-shadow 0.3s',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
       }}
     >
       {/* 16:9比例的图片容器 */}
@@ -71,14 +84,91 @@ const ArticleCard = ({ article }: { article: Article }) => {
       </div>
 
       {/* 文章标题 */}
+      <Text
+        ellipsis={{
+          tooltip: title,
+        }}
+        style={{
+          padding: '16px 16px 8px',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: '#333',
+          lineHeight: '1.4',
+          flex: '1',
+          display: 'block',           // ✅ 关键：改为块级元素
+          // width: '100%',             // ✅ 明确宽度
+          maxWidth: '100%',          // ✅ 最大宽度
+          boxSizing: 'border-box',
+          whiteSpace: 'nowrap',
+          margin: 0,
+        }}
+      >
+        <Tooltip
+          title={title}
+          color="#000"
+          styles={{ body: { color: "#fff" } }}
+        >
+          {title}
+        </Tooltip>
+      </Text>
+
+      {/* 作者信息和统计数据 */}
       <div style={{
-        padding: '16px',
-        fontSize: '18px',
-        fontWeight: '600',
-        color: '#333',
-        lineHeight: '1.4'
+        padding: '8px 16px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderTop: '1px solid #f5f5f5'
       }}>
-        {title}
+        {/* 作者信息 */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <img
+            src={author?.avatar_url || defaultAvatar}
+            alt={author?.username || '未知作者'}
+            style={{
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              objectFit: 'cover'
+            }}
+          />
+          <span style={{
+            fontSize: '12px',
+            color: '#666'
+          }}>
+            {author?.username || '未知作者'}
+          </span>
+        </div>
+
+        {/* 统计数据 */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <span style={{
+            fontSize: '12px',
+            color: '#999'
+          }}>
+            <HeartOutlined /> {like_count || 0}
+          </span>
+          <span style={{
+            fontSize: '12px',
+            color: '#999'
+          }}>
+            <MessageOutlined /> {comment_count || 0}
+          </span>
+          <span style={{
+            fontSize: '12px',
+            color: '#999'
+          }}>
+            <StarOutlined /> {collect_count || 0}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -157,9 +247,9 @@ const Home = () => {
 
   return (
     <div style={{ display: "flex" }}>
-      <div style={{ flex: "0 0 auto", padding: '20px 0 0 20px', minWidth: '10vw' }}>
+      <div style={{ flex: "0 0 auto", padding: '20px 0 20px 20px', minWidth: '10vw' }}>
         <List
-          style={{ backgroundColor: '#f5f5f5' }}
+          style={{ backgroundColor: '#f5f5f5', height: '100%' }}
           header={<div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>体系知识</div>}
           footer={<div></div>}
           bordered
