@@ -85,7 +85,7 @@ export const CodeBlock: React.FC<{
     };
 
     return (
-        <div style={{ position: 'relative', margin: '16px 0' }}>
+        <div style={{ position: 'relative', margin: '0' }}>
             <button
                 onClick={handleCopy}
                 style={{
@@ -114,7 +114,7 @@ export const CodeBlock: React.FC<{
                 margin: 0,
                 background: '#2d2d2d'
             }}>
-                <code className={className} {...props}>{children}</code>
+                <code className={className} {...props} style={{ whiteSpace: 'pre-wrap' }}>{children}</code>
             </pre>
         </div>
     );

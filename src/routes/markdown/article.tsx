@@ -400,7 +400,7 @@ export default function ReadArticle() {
 
       {/* 文章内容容器 */}
       <div style={{
-        maxWidth: '800px',
+        maxWidth: 'calc(80vw - 327px)',
         padding: '20px',
         backgroundColor: 'white',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
@@ -636,6 +636,7 @@ export default function ReadArticle() {
                 placeholder="请输入您的邮箱（选填）"
                 style={{
                   width: '100%',
+                  boxSizing: 'border-box',
                   padding: '12px',
                   borderRadius: '4px',
                   border: '1px solid #d9d9d9',
@@ -651,6 +652,7 @@ export default function ReadArticle() {
               placeholder="请输入您的评论..."
               style={{
                 width: '100%',
+                boxSizing: 'border-box',
                 minHeight: '100px',
                 padding: '12px',
                 borderRadius: '4px',
@@ -695,6 +697,7 @@ export default function ReadArticle() {
         marginLeft: '20px'
       }}>
         <h3 style={{ margin: '2px', fontSize: '16px', fontWeight: '600', color: '#262626' }}>文章目录</h3>
+        {/* 有个少了第一个目录的BUG */}
         <MarkdownNavbar
           source={article.content}
           className="markdown-navigation"
