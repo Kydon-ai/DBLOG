@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import request from '../utils/https/request';
 import { List, Typography, Tooltip } from 'antd';
-import { HeartOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
+import { HeartOutlined, MessageOutlined, StarOutlined, EyeOutlined } from '@ant-design/icons';
 const { Text } = Typography;
 // 文章数据类型定义
 interface AuthorInfo {
@@ -31,7 +31,7 @@ interface Article {
 // 文章卡片组件
 const ArticleCard = ({ article }: { article: Article }) => {
   const navigate = useNavigate();
-  const { id, title, author, like_count, comment_count, collect_count } = article;
+  const { id, title, author, like_count, comment_count, collect_count, view_count } = article;
   const [isHovered, setIsHovered] = useState(false);
 
   // 处理卡片点击事件
@@ -89,7 +89,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
           tooltip: title,
         }}
         style={{
-          padding: '16px 16px 8px',
+          padding: '4px 8px',
           fontSize: '16px',
           fontWeight: '600',
           color: '#333',
@@ -114,7 +114,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
       {/* 作者信息和统计数据 */}
       <div style={{
-        padding: '8px 16px 16px',
+        padding: '0px 8px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -167,6 +167,12 @@ const ArticleCard = ({ article }: { article: Article }) => {
             color: '#999'
           }}>
             <StarOutlined /> {collect_count || 0}
+          </span>
+          <span style={{
+            fontSize: '12px',
+            color: '#999'
+          }}>
+            <EyeOutlined /> {view_count || 0}
           </span>
         </div>
       </div>

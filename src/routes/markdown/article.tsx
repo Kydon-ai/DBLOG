@@ -564,18 +564,20 @@ export default function ReadArticle() {
                     display: 'flex',
                     justifyContent: 'center',
                   }}>
-                    <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
-                    {title && (
-                      <div style={{
-                        display: 'block',
-                        textAlign: 'center',
-                        fontSize: '14px',
-                        color: '#666',
-                        fontStyle: 'italic'
-                      }}>
-                        {title}
-                      </div>
-                    )}
+                    <div>
+                      <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
+                      {title && (
+                        <div style={{
+                          display: 'block',
+                          textAlign: 'center',
+                          fontSize: '14px',
+                          color: '#666',
+                          fontStyle: 'italic'
+                        }}>
+                          {title}
+                        </div>
+                      )}
+                    </div>
                   </div>)
                 },
                 a: ({ node, ...props }) => {
