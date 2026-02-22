@@ -24,13 +24,16 @@ import WriteArticle from './routes/markdown/WriteArticle.tsx';
 import Login from './routes/login.tsx';
 import PersonalCenter from './routes/businessComponents/PersonalCenter.tsx';
 import { WindowSizeProvider } from './utils/windowContext/win.tsx';
+import ExternalRedirect from './routes/businessComponents/UrlRedeirect.tsx';
 
 
 // 创建布局组件以使用useLocation钩子
 const AppLayout = () => {
 	const location = useLocation();
+	// 只修改内容宽度
 	const specialWidthRouter: string[] = ["/", "/home", "/write-article"];
-	const specialLayoutRouter: string[] = [];
+	// 需要隐藏header 和footer
+	const specialLayoutRouter: string[] = ["/url-redirect"];
 	return (
 		<WindowSizeProvider>
 			<div className="layout">
@@ -102,6 +105,8 @@ const AppLayout = () => {
 								/>
 								<Route path="/login" element={<Login />} />
 								<Route path="/profile-center" element={<PersonalCenter />} />
+								{/* 跳转站外 */}
+								<Route path="/url-redirect" element={<ExternalRedirect />} />
 							</Routes>
 						</div>
 						<FloatButton.BackTop />

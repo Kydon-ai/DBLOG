@@ -552,7 +552,44 @@ export default function ReadArticle() {
                     )}
                   </div>)
                 },
-                a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
+                a: ({ node, ...props }) => {
+                  const href = props.href;
+                  if (!href) return <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />;
+
+                  // 检查是否是本地链接或指定域名
+                  const isLocal = href.startsWith('/');
+                  // 安全验证：检查是否是 qidong.tech 顶级域名
+                  const isQidongTech = (() => {
+                    try {
+                      // 如果是相对路径，直接返回 false
+                      if (href.startsWith('/') || href.startsWith('#')) {
+                        return false;
+                      }
+
+                      const url = new URL(href);
+                      const hostname = url.hostname;
+
+                      // 精确匹配顶级域名
+                      return hostname === 'qidong.tech' ||
+                        hostname.endsWith('.qidong.tech');
+                    } catch (error) {
+                      // URL解析失败（可能是mailto:、tel:等）
+                      return false;
+                    }
+                  })();
+
+                  if (isLocal || isQidongTech) {
+                    // 直接在新窗口打开
+                    return <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer" />;
+                  } else {
+                    // 跳转到确认页面
+                    const handleClick = (e: React.MouseEvent) => {
+                      e.preventDefault();
+                      window.open(`/url-redirect?url=${encodeURIComponent(href)}`, '_blank');
+                    };
+                    return <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} onClick={handleClick} />;
+                  }
+                },
                 table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
                 th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
                 td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
