@@ -58,6 +58,8 @@ export default function ReadArticle() {
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isCollected, setIsCollected] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   // 评论表单状态
   const [commentForm, setCommentForm] = useState({
@@ -154,6 +156,33 @@ export default function ReadArticle() {
       }
     } catch (err) {
       console.error('收藏/取消收藏失败:', err);
+    }
+  };
+
+  // 复制文章内容
+  const handleCopyContent = async () => {
+    if (!article) return;
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(article.content);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = article.content;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('复制失败:', err);
     }
   };
 
@@ -386,7 +415,6 @@ export default function ReadArticle() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '30px',
           fontSize: '14px',
           color: '#8c8c8c',
           paddingBottom: '15px',
@@ -423,85 +451,110 @@ export default function ReadArticle() {
         </div>
 
         {/* 文章内容 */}
-        <div className='preview-content' style={{
-          fontSize: '16px',
-          lineHeight: '1.8',
-          color: '#262626',
-          marginBottom: '40px'
-        }}>
-          {/* <ReactMarkdown rehypePlugins={[rehypePrism]}>
+        <div style={{ position: 'relative' }}>
+          {/* 复制按钮 */}
+          <button
+            onClick={handleCopyContent}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            style={{
+              position: 'absolute',
+              top: '0px',
+              right: '0',
+              background: isCopied ? '#ffd700' : (isHovered ? 'linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%)' : 'linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%)'),
+              border: '1px solid #ffd700',
+              borderRadius: '4px',
+              padding: '4px 12px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              color: '#8b4513',
+              transition: 'all 1s',
+              zIndex: 10,
+            }}
+          >
+            {isCopied ? '已复制!' : '复制文章'}
+          </button>
+
+          <div className='preview-content' style={{
+            fontSize: '16px',
+            lineHeight: '1.8',
+            color: '#262626',
+            marginBottom: '40px'
+          }}>
+            {/* <ReactMarkdown rehypePlugins={[rehypePrism]}>
             {article.content}
           </ReactMarkdown> */}
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkEmoji, remarkMath]}
-            rehypePlugins={[rehypeRaw, rehypeKatex, rehypePrism]}
-            children={article.content}
-            components={{
-              h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px' }} />,
-              h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
-              h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
-              p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
-              // @ts-ignore
-              code: ({ node, inline, className, children, ...props }) => {
-                if (inline) {
-                  return (
-                    <code
-                      {...props}
-                      style={{
-                        backgroundColor: '#fafafa',
-                        padding: '2px 4px',
-                        borderRadius: '3px',
-                        fontFamily: 'monospace'
-                      }}
-                    >{children}</code>
-                  );
-                }
-                if (typeof children === 'string') {
-                  // 按照行内代码处理
-                  return (
-                    <code
-                      {...props}
-                      style={{
-                        backgroundColor: '#818b981f',
-                        padding: '2px 4px',
-                        borderRadius: '3px',
-                        fontFamily: 'monospace'
-                      }}
-                    >{children}</code>
-                  );
-                }
-                return <CodeBlock className={className} children={children} {...props} />;
-              },
-              ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
-              ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
-              li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
-              blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px' }} />,
-              img: ({ node, ...props }) => {
-                const { title } = props;
-                return (<div style={{
-                  margin: '20px 0'
-                }}>
-                  <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
-                  {title && (
-                    <div style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      fontSize: '14px',
-                      color: '#666',
-                      fontStyle: 'italic'
-                    }}>
-                      {title}
-                    </div>
-                  )}
-                </div>)
-              },
-              a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
-              table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
-              th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
-              td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
-              mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px' }} />
-            }}
-          />
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkEmoji, remarkMath]}
+              rehypePlugins={[rehypeRaw, rehypeKatex, rehypePrism]}
+              children={article.content}
+              components={{
+                h1: ({ node, ...props }) => <h1 {...props} style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '1px solid #e8e8e8', paddingBottom: '10px' }} />,
+                h2: ({ node, ...props }) => <h2 {...props} style={{ fontSize: '20px', marginTop: '30px', marginBottom: '16px' }} />,
+                h3: ({ node, ...props }) => <h3 {...props} style={{ fontSize: '16px', marginTop: '24px', marginBottom: '12px' }} />,
+                p: ({ node, ...props }) => <p {...props} style={{ marginBottom: '16px' }} />,
+                // @ts-ignore
+                code: ({ node, inline, className, children, ...props }) => {
+                  if (inline) {
+                    return (
+                      <code
+                        {...props}
+                        style={{
+                          backgroundColor: '#fafafa',
+                          padding: '2px 4px',
+                          borderRadius: '3px',
+                          fontFamily: 'monospace'
+                        }}
+                      >{children}</code>
+                    );
+                  }
+                  if (typeof children === 'string') {
+                    // 按照行内代码处理
+                    return (
+                      <code
+                        {...props}
+                        style={{
+                          backgroundColor: '#818b981f',
+                          padding: '2px 4px',
+                          borderRadius: '3px',
+                          fontFamily: 'monospace'
+                        }}
+                      >{children}</code>
+                    );
+                  }
+                  return <CodeBlock className={className} children={children} {...props} />;
+                },
+                ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
+                ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
+                li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
+                blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px' }} />,
+                img: ({ node, ...props }) => {
+                  const { title } = props;
+                  return (<div style={{
+                    margin: '20px 0'
+                  }}>
+                    <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
+                    {title && (
+                      <div style={{
+                        display: 'block',
+                        textAlign: 'center',
+                        fontSize: '14px',
+                        color: '#666',
+                        fontStyle: 'italic'
+                      }}>
+                        {title}
+                      </div>
+                    )}
+                  </div>)
+                },
+                a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
+                table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
+                th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
+                td: ({ node, ...props }) => <td {...props} style={{ border: '1px solid #e8e8e8', padding: '8px' }} />,
+                mark: ({ node, ...props }) => <mark {...props} style={{ backgroundColor: '#ffeb3b', padding: '0 2px' }} />
+              }}
+            />
+          </div>
         </div>
 
         {/* 评论区 */}
