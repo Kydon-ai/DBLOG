@@ -35,10 +35,12 @@ const PersonalCenter: React.FC = () => {
 
   // 如果未登录，重定向到登录页面
   useEffect(() => {
-    if (!isLogin || !userInfo) {
+    if (!isLogin) {
       navigate('/login');
-    } else {
-      // 获取用户详细信息
+      return;  // 提前返回
+    }
+
+    if (!userInfo) {
       fetchUserInfo();
     }
   }, [isLogin, userInfo, navigate]);
