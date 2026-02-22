@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import request from '../utils/https/request';
-import { List, Typography } from 'antd';
+import { List } from 'antd';
 
 // 文章数据类型定义
 interface Article {
@@ -89,6 +89,7 @@ const Home = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // @ts-ignore
   const [sys_knowledge, setSysKnowledge] = useState<any[]>([
     '体系知识1',
     '体系知识2',
@@ -96,6 +97,7 @@ const Home = () => {
     '体系知识4',
     '体系知识5',
   ]);
+  // @ts-ignore
   const [sys_announcement, setSysAnnouncement] = useState<any[]>([
     '网页公告1',
     '网页公告2',

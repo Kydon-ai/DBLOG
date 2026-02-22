@@ -89,6 +89,7 @@ const TopMenu: React.FC = () => {
         <div style={{ flex: 1 }}>
             <Menu
                 selectedKeys={[current]}
+                key={items.length}
                 mode="vertical"
                 onClick={onClick}
                 items={items}
@@ -123,9 +124,10 @@ const TopMenu: React.FC = () => {
                 {isHorizontal ? (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* solution url:https://www.cnblogs.com/luyifo/articles/18064051 */}
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: "1" }}>
                             <Menu
                                 onClick={onClick}
+                                key={items.length}
                                 selectedKeys={[current]}
                                 mode="horizontal"
                                 items={items}

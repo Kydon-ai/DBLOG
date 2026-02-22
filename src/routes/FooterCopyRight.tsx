@@ -36,7 +36,7 @@ const FooterCopyright = () => {
     const TIME_M = 60 * TIME_S
     const TIME_H = 60 * TIME_M
     const TIME_D = 24 * TIME_H
-    const TIME_W = 7 * TIME_D
+    // const TIME_W = 7 * TIME_D
     const TIME_MONTH = 30 * TIME_D
     const TIME_Y = 12 * TIME_MONTH
 
