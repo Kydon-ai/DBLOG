@@ -11,6 +11,9 @@ import rehypeRaw from 'rehype-raw';
 import remarkEmoji from 'remark-emoji';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import MarkdownNavbar from 'markdown-navbar';
+import './fix_markdownnavbar.css';
+// import 'markdown-navbar/dist/navbar.css';
 // 文章数据类型定义
 interface Article {
   id: number;
@@ -388,14 +391,16 @@ export default function ReadArticle() {
 
   return (
     <div ref={articleRef} style={{
+      display: 'flex',
       minHeight: '100vh',
       backgroundColor: '#f5f5f5',
-      paddingBottom: '60px' // 为底部栏留出空间
+      padding: '20px',
+      justifyContent: 'center'
     }}>
+
       {/* 文章内容容器 */}
       <div style={{
         maxWidth: '800px',
-        margin: '0 auto',
         padding: '20px',
         backgroundColor: 'white',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
@@ -676,7 +681,27 @@ export default function ReadArticle() {
           </div>
         </div>
       </div>
-
+      {/* 目录 */}
+      <div className="navigation" style={{
+        position: 'sticky',
+        top: '0px',
+        width: '250px',
+        maxHeight: 'calc(100vh - 40px)',
+        overflowY: 'auto',
+        padding: '20px',
+        backgroundColor: 'white',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        borderRadius: '8px',
+        marginLeft: '20px'
+      }}>
+        <h3 style={{ margin: '2px', fontSize: '16px', fontWeight: '600', color: '#262626' }}>文章目录</h3>
+        <MarkdownNavbar
+          source={article.content}
+          className="markdown-navigation"
+          titleLevel={6}
+          ordered={false}
+        />
+      </div>
       {/* 底部粘性操作栏 */}
       {!isAtBottom && (
         <div style={{
