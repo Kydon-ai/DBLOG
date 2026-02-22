@@ -28,6 +28,16 @@ interface Article {
   author?: AuthorInfo;
 }
 
+// 公告数据类型定义
+interface Announcement {
+  id: number;
+  title: string;
+  view_count: number;
+  created_at: string;
+  published_at: string;
+  author?: AuthorInfo;
+}
+
 // 文章卡片组件
 const ArticleCard = ({ article }: { article: Article }) => {
   const navigate = useNavigate();
@@ -182,27 +192,22 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
 // 主页组件
 const Home = () => {
+  const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // @ts-ignore
-  const [sys_knowledge, setSysKnowledge] = useState<any[]>([
+  const [announcementLoading, setAnnouncementLoading] = useState(true);
+  const [announcementError, setAnnouncementError] = useState<string | null>(null);
+  const [sys_knowledge, setSysKnowledge] = useState<string[]>([
     '体系知识1',
     '体系知识2',
     '体系知识3',
     '体系知识4',
     '体系知识5',
   ]);
-  // @ts-ignore
-  const [sys_announcement, setSysAnnouncement] = useState<any[]>([
-    '网页公告1',
-    '网页公告2',
-    '网页公告3',
-    '网页公告4',
-    '网页公告5',
-  ]);
 
-  // 组件挂载时获取文章列表
+  // 组件挂载时获取文章列表和公告列表
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -218,7 +223,22 @@ const Home = () => {
       }
     };
 
+    const fetchAnnouncements = async () => {
+      try {
+        setAnnouncementLoading(true);
+        const response = await request.get('/api/announcements');
+        setAnnouncements(response);
+        setAnnouncementError(null);
+      } catch (err) {
+        console.error('获取公告列表失败:', err);
+        setAnnouncementError('获取公告列表失败，请稍后重试');
+      } finally {
+        setAnnouncementLoading(false);
+      }
+    };
+
     fetchArticles();
+    fetchAnnouncements();
   }, []);
 
   if (loading) {
@@ -292,15 +312,37 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div style={{ flex: "0 0 auto", padding: '20px 20px 0 0', minWidth: '10vw' }}>
-
+      <div style={{ flex: "0 0 auto", padding: '20px 20px 0 0', width: '10vw' }}>
         <List
           style={{ backgroundColor: '#f5f5f5' }}
           header={<div style={{ fontSize: '18px', fontWeight: '600', color: '#333' }}>网页公告</div>}
           footer={<div></div>}
           bordered
-          dataSource={sys_announcement}
-          renderItem={(item) => <List.Item>{item}</List.Item>}
+          dataSource={announcements}
+          renderItem={(announcement) => (
+            <List.Item >
+              <a
+                href={`/announcements/${announcement.id}`}
+                style={{
+                  color: '#1890ff',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/announcements/${announcement.id}`);
+                }}
+              >
+                <Tooltip title={announcement.title}>
+                  {announcement.title}
+                </Tooltip>
+              </a>
+            </List.Item>
+          )}
         />
       </div>
     </div >
