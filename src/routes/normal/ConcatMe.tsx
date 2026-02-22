@@ -24,56 +24,69 @@ export default function DefaultTemplate() {
                 borderTopRightRadius: 'inherit',
             }}></div>
             <div className="main-content">
-                <Card hoverable style={{ borderRadius: 'initial' }}>
+                <Card style={{ borderRadius: 'initial' }}>
                     <h1>基本情况</h1>
-                    <p>
-                        <strong>曾用网名: &nbsp;&nbsp;</strong>
-                        <span>云深不知处;</span>
-                    </p>
-                    <p>
-                        <strong>励己名言: &nbsp;&nbsp;</strong>
-                        <span> <a href="https://baijiahao.baidu.com/s?id=1629150673782461819&wfr=spider&for=pc" target="_blank">我亦是我,我将无我</a>                            ;</span>
-                    </p>
                     <p>
                         <strong>联系方式: &nbsp;&nbsp;</strong>
                         <span>
                             扣扣:<a href="mailto:2548818216@qq.com">2548818216@qq.com</a>;
-                            WX:<a href="weixin://dl/chat?username=_qidong2003">_qidong2003</a>;
+                            WX:<a href="weixin://dl/chat?username=kydon03">kydon03</a>;
                         </span>
                     </p>
                     <p>
-                        <strong>自我介绍: &nbsp;&nbsp;</strong>
-                        <span>来自十八线乡村,非标准农村做题家;</span>
-                    </p>
-                    <p>
                         <strong>个人爱好: &nbsp;&nbsp;</strong>
-                        <span>独立思考;参阅古文;经济金融;网页开发;</span>
+                        <span>独立思考; 参阅古文; 经济金融; 全栈开发; 大模型开发; 智能体开发与应用;</span>
                     </p>
                 </Card>
-                <Card hoverable style={{ borderRadius: 'initial' }}>
+                <Card style={{ borderRadius: 'initial' }}>
+                    <h1>公开作品集</h1>
+                    <ol>
+                        <li>
+                            <strong>PRY判题系统: &nbsp;&nbsp;</strong>
+                            <span>
+                                <a target="_blank" href="https://pry.jsu.edu.cn/">https://pry.jsu.edu.cn/</a>
+                            </span>
+                        </li>
+                        <li>
+                            <strong>DBLOG博客系统: &nbsp;&nbsp;</strong>
+                            <span>
+                                <a target="_blank" href="https://www.qidong.tech/">https://www.qidong.tech/</a>
+                            </span>
+                        </li>
+                        <li>
+                            <strong>IMGM相册管理系统: &nbsp;&nbsp;</strong>
+                            <span>
+                                <a target="_blank" href="https://github.com/Kydon-ai/IMGM">https://github.com/Kydon-ai/IMGM</a>
+                            </span>
+                        </li>
+                    </ol>
+                </Card>
+                <Card style={{ borderRadius: 'initial' }}>
                     <h1>个人经历</h1>
                     <p>
                         <strong>开发经验: &nbsp;&nbsp;</strong>
-                        <span>2.5年;共计负责与参与大小项目12项;</span>
+                        <span>4年; 共计负责与参与大小项目20+项;</span>
                     </p>
                     <p>
-                        <strong>技术框架: &nbsp;&nbsp;</strong>
-                        <span>Vue; React; WebPack; Vite; TypeScript; Naive UI; Ant Design; Electron; WebSocket; Nginx;</span>
+                        <strong>掌握框架与技能: &nbsp;&nbsp;</strong>
+                        <p>Vue; WebPack; JavaScript; Naive UI; Element Plus; HTML; CSS; Electron;</p>
+                        <p>React; Vite; TypeScript; Ant Design;</p>
+                        <p>OpenAI Spec; MCP; A2A; Skills;</p>
+                        <p>Git;Docker; Nginx; N8N; Comfy UI;</p>
+                        <p>Python; JavaScript; C++; Rust;</p>
+                        <p>现在转行做大模型开发、AI Agent、短剧生成、PPT生成等</p>
                     </p>
                     <p>
                         <strong>涉及场景: &nbsp;&nbsp;</strong>
-                        <span>Web界面;移动端APP;微信小程序;快应用;</span>
+                        <p>Web开发; 移动端APP; 微信小程序; 快应用; 服务运维; 基模训练; RAG; AI Agent</p>
                     </p>
                     <p>
                         <strong>实习经历: &nbsp;&nbsp;</strong>
-                        <span>中和农信农业集团有限公司(前端开发实习生);</span>
-                    </p>
-                    <p>
-                        <strong>早期博客: &nbsp;&nbsp;</strong>
-                        <span><a href="https://blog.csdn.net/m0_72678953?type=blog" target="_blank">JSU曾是此间年少&nbsp;的博客</a></span>
+                        <p>中和农信农业集团有限公司 金融科技部 前端开发实习生 核心ToB业务</p>
+                        <p>深圳市乐途宝网络科技有限公司 前端开发实习生 企业ToB业务</p>
                     </p>
                 </Card>
-                <Card hoverable style={{
+                <Card style={{
                     borderTopLeftRadius: 'initial',
                     borderTopRightRadius: 'initial',
                 }}>
