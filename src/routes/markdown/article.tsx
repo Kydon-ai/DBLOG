@@ -476,7 +476,25 @@ export default function ReadArticle() {
               ol: ({ node, ...props }) => <ol {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
               li: ({ node, ...props }) => <li {...props} style={{ marginBottom: '8px' }} />,
               blockquote: ({ node, ...props }) => <blockquote {...props} style={{ borderLeft: '4px solid #1890ff', paddingLeft: '16px', color: '#666', marginBottom: '16px' }} />,
-              img: ({ node, ...props }) => <img {...props} style={{ maxWidth: '100%', height: 'auto', marginBottom: '16px' }} />,
+              img: ({ node, ...props }) => {
+                const { title } = props;
+                return (<div style={{
+                  margin: '20px 0'
+                }}>
+                  <img {...props} style={{ maxWidth: '100%', height: 'auto', border: '1px solid #e8e8e8' }} />
+                  {title && (
+                    <div style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      fontSize: '14px',
+                      color: '#666',
+                      fontStyle: 'italic'
+                    }}>
+                      {title}
+                    </div>
+                  )}
+                </div>)
+              },
               a: ({ node, ...props }) => <a {...props} style={{ color: '#1890ff', textDecoration: 'underline' }} />,
               table: ({ node, ...props }) => <table {...props} style={{ borderCollapse: 'collapse', width: '100%', marginBottom: '16px' }} />,
               th: ({ node, ...props }) => <th {...props} style={{ border: '1px solid #e8e8e8', padding: '8px', backgroundColor: '#fafafa' }} />,
