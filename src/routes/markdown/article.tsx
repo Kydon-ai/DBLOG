@@ -456,7 +456,20 @@ export default function ReadArticle() {
                     >{children}</code>
                   );
                 }
-
+                if (typeof children === 'string') {
+                  // 按照行内代码处理
+                  return (
+                    <code
+                      {...props}
+                      style={{
+                        backgroundColor: '#818b981f',
+                        padding: '2px 4px',
+                        borderRadius: '3px',
+                        fontFamily: 'monospace'
+                      }}
+                    >{children}</code>
+                  );
+                }
                 return <CodeBlock className={className} children={children} {...props} />;
               },
               ul: ({ node, ...props }) => <ul {...props} style={{ marginBottom: '16px', paddingLeft: '24px' }} />,
