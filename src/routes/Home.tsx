@@ -41,7 +41,7 @@ interface Announcement {
 // 文章卡片组件
 const ArticleCard = ({ article }: { article: Article }) => {
   const navigate = useNavigate();
-  const { id, title, author, like_count, comment_count, collect_count, view_count } = article;
+  const { id, title, author, like_count, comment_count, collect_count, view_count, post_image_url, updated_at } = article;
   const [isHovered, setIsHovered] = useState(false);
 
   // 处理卡片点击事件
@@ -80,7 +80,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
         overflow: 'hidden'
       }}>
         <img
-          src={imageUrl}
+          src={post_image_url ? post_image_url : imageUrl}
           alt={title}
           style={{
             position: 'absolute',
@@ -152,8 +152,22 @@ const ArticleCard = ({ article }: { article: Article }) => {
           }}>
             {author?.username || '未知作者'}
           </span>
+          
+          <span style={{
+            fontSize: '12px',
+            color: '#999'
+          }}>
+            {new Date(updated_at).toLocaleString('zh-CN', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false // 使用24小时制
+            })}
+          </span>
         </div>
-
+          
         {/* 统计数据 */}
         <div style={{
           display: 'flex',
