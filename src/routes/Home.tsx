@@ -25,6 +25,7 @@ interface Article {
   created_at: string;
   updated_at: string | null;
   published_at: string | null;
+  post_image_url: string | null;
   author?: AuthorInfo;
 }
 
@@ -157,14 +158,14 @@ const ArticleCard = ({ article }: { article: Article }) => {
             fontSize: '12px',
             color: '#999'
           }}>
-            {new Date(updated_at).toLocaleString('zh-CN', {
+            {updated_at ? new Date(updated_at).toLocaleString('zh-CN', {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit',
               hour: '2-digit',
               minute: '2-digit',
               hour12: false // 使用24小时制
-            })}
+            }) : 'T-T'}
           </span>
         </div>
           

@@ -166,12 +166,20 @@ export default function ReadArticle() {
   const handleCopyContent = async () => {
     if (!article) return;
 
+    let copy_content = article.content
+    copy_content += `
+    ————————————————————————————————————————————————
+    [声明]：本站所有文章默认采用CC BY-NC 4.0，转载保留此声明即认为合规。
+    [链接]：${window.location.href}
+    [注意]：为尊重作者原意，建议您在引用时保持上下文完整，避免断章取义。
+    ———————————————————————————————————————————————
+    `;
     try {
       if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(article.content);
+        await navigator.clipboard.writeText(copy_content);
       } else {
         const textArea = document.createElement('textarea');
-        textArea.value = article.content;
+        textArea.value =copy_content;
         textArea.style.position = 'fixed';
         textArea.style.left = '-999999px';
         textArea.style.top = '-999999px';
