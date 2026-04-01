@@ -54,6 +54,15 @@ const ArticleCard = ({ article }: { article: Article }) => {
   const imageUrl = '/img/default_blog.svg';
   // 使用默认头像
   const defaultAvatar = '/img/user.png';
+
+  function resizeImage(url, size = 640) {
+    if (!url) return url;
+    return url.replace(
+      "https://oss.qidong.tech/",
+      `https://oss.qidong.tech/resize/${size}/`
+    );
+  }
+  const src = post_image_url || imageUrl;
   return (
     <div
       onClick={handleCardClick}
@@ -81,7 +90,17 @@ const ArticleCard = ({ article }: { article: Article }) => {
         overflow: 'hidden'
       }}>
         <img
-          src={post_image_url ? post_image_url : imageUrl}
+          src={resizeImage(src, 640)}
+          srcSet={`
+            ${resizeImage(src, 320)} 320w,
+            ${resizeImage(src, 640)} 640w,
+            ${resizeImage(src, 960)} 960w,
+            // ${resizeImage(src, 1280)} 1280w
+          `}
+          sizes="(max-width: 640px) 100vw,
+          (max-width: 1024px) 50vw,
+          (max-width: 1400px) 33vw,
+          25vw"
           alt={title}
           style={{
             position: 'absolute',
