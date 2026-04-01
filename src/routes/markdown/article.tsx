@@ -11,9 +11,10 @@ import rehypeRaw from 'rehype-raw';
 import remarkEmoji from 'remark-emoji';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import MarkdownNavbar from 'markdown-navbar';
-import './fix_markdownnavbar.css';
-// import 'markdown-navbar/dist/navbar.css';
+import MarkdownNavbar from 'kydon-markdown-navbar';
+// import MarkdownNavbar from 'markdown-navbar';
+// import './fix_markdownnavbar.css';
+import 'kydon-markdown-navbar/dist/navbar.css';
 // 文章数据类型定义
 interface Article {
   id: number;
@@ -170,7 +171,7 @@ export default function ReadArticle() {
     copy_content += `
     ————————————————————————————————————————————————
     [声明]：本站所有文章默认采用CC BY-NC 4.0，转载保留此声明即认为合规。
-    [链接]：${window.location.href}
+    [链接]：${window.location.href.split('#')[0]}
     [注意]：为尊重作者原意，建议您在引用时保持上下文完整，避免断章取义。
     ———————————————————————————————————————————————
     `;
