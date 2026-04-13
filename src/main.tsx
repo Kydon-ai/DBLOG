@@ -27,6 +27,7 @@ import Login from './routes/login.tsx';
 import PersonalCenter from './routes/businessComponents/PersonalCenter.tsx';
 import { WindowSizeProvider } from './utils/windowContext/win.tsx';
 import ExternalRedirect from './routes/businessComponents/UrlRedeirect.tsx';
+import StringTool from './routes/tool/StringTool.tsx';
 
 
 // 创建布局组件以使用useLocation钩子
@@ -109,6 +110,8 @@ const AppLayout = () => {
 								/>
 								{/* 跳转站外 */}
 								<Route path="/url-redirect" element={<ExternalRedirect />} />
+								{/* 工具路由 */}
+								<Route path="/tool/url-split" element={<StringTool />} />
 								{/* 公告相关路由 */}
 								<Route
 									path="/write-announcement"
